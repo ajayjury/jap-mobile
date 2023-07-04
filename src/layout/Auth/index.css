@@ -3,9 +3,9 @@
 }
 
 .img-logo{
-    height: 60px;
+    height: 200px;
     object-fit: contain;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
 }
 
 .text-center{
@@ -46,4 +46,8 @@
 
 .text-capitalize{
     text-transform: capitalize;
+}
+
+.auth-main-background{
+    --background: #ddf8e8;
 }

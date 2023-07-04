@@ -15,7 +15,7 @@ type Props = {
 const Input: React.FC<Props> = ({errors, register, label, type, name, placeholder, inputmode}) => {
     return (
         <>
-            <IonItem className="ion-no-padding">
+            <IonItem className="ion-no-padding auth-card-background">
                 <IonInput 
                     className="ion-no-padding" 
                     label={label} 
