@@ -9,6 +9,26 @@
 .main-header-background{
     --background: #ddf8e8 !important;
 }
+.d-none{
+    display: none;
+}
+.pt-10{
+    padding-top: 10px;
+}
+.pt-40{
+    padding-top: 45px;
+}
+
+.custom-main-header-bg{
+    background-color: #ddf8e8;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.custom-main-header{
+    padding-bottom: 10px;
+    position: sticky;
+    z-index: 10;
+    top: 0px;
+}
 
 .swiper{
     padding-bottom: 25px;
@@ -38,7 +58,7 @@
     padding-top: 0;
 }
 
-.content-main h1, .content-main h2{
+.content-main h1, .content-main h2, .content-main h4{
     /* text-align: center; */
     position: relative;
     padding: 0;
@@ -55,7 +75,7 @@
     padding-bottom: 5px;
 }
 
-.content-main h1:before, .content-main h2:before {
+.content-main h1:before, .content-main h2:before, .content-main h4:before {
     width: 28px;
     height: 5px;
     display: block;
@@ -67,7 +87,7 @@
     background-color: #28ba62;
 }
 
-.content-main h1:after, .content-main h2:after {
+.content-main h1:after, .content-main h2:after, .content-main h4:after {
     width: 100px;
     height: 1px;
     display: block;
@@ -99,6 +119,10 @@
     padding: 10px;
 }
 
+.pt-15{
+    padding-top: 15px;
+}
+
 .category-img-card{
     height: 60px;
     object-fit: contain;
@@ -107,6 +131,14 @@
 
 .text-capitalize{
     text-transform: capitalize;
+}
+
+.bg-grey{
+    background-color: #fefdfd;
+}
+
+.bg-white{
+    background-color: #ffffff;
 }
 
 .card-bg-grey{
@@ -140,4 +172,47 @@
 
 .main-tabs.tab-selected{
     color:#28ba62;
+}
+
+.padding-inline-5{
+    padding-inline: 5px;
+}
+
+.pagination-btn{
+    --padding-start: 10px;
+    --padding-end: 10px;
+    height: 30px;
+}
+
+.mt-_5{
+    margin-top: 0.1rem;
+}
+
+.pt-_5{
+    padding-top: 0.3rem;
+}
+
+.pb-0{
+    padding-bottom: 0;
+}
+
+.ptb-1{
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.p-sticky-0{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.transparent-item-bg{
+    --background: transparent;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+}
+
+.transparent-bg{
+    background: transparent;
 }

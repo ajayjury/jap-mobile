@@ -47,6 +47,7 @@ import Login from './pages/auth/login';
 import ForgotPassword from './pages/auth/forgot-password';
 import Register from './pages/auth/register';
 import Home from './pages/main/home';
+import Product from './pages/main/product';
 
 setupIonicReact();
 
@@ -67,6 +68,9 @@ const App: React.FC = () => (
           <Route exact path="/home">
             <Home />
           </Route>
+          <Route exact path="/products">
+            <Product />
+          </Route>
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
@@ -78,7 +82,7 @@ const App: React.FC = () => (
             <IonLabel>Home</IonLabel>
           </IonTabButton>
 
-          <IonTabButton className='main-tabs' tab="forgot_password" href="/forgot_password">
+          <IonTabButton className='main-tabs' tab="products" href="/products">
             <IonIcon icon={fileTrayStackedOutline} />
             <IonLabel>Products</IonLabel>
           </IonTabButton>
