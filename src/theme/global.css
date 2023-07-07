@@ -58,7 +58,7 @@
     padding-top: 0;
 }
 
-.content-main h1, .content-main h2, .content-main h4{
+.content-main h1, .content-main h2, .content-main h4, .content-main h6{
     /* text-align: center; */
     position: relative;
     padding: 0;
@@ -75,7 +75,7 @@
     padding-bottom: 5px;
 }
 
-.content-main h1:before, .content-main h2:before, .content-main h4:before {
+.content-main h1:before, .content-main h2:before, .content-main h4:before, .content-main h6:before {
     width: 28px;
     height: 5px;
     display: block;
@@ -87,7 +87,7 @@
     background-color: #28ba62;
 }
 
-.content-main h1:after, .content-main h2:after, .content-main h4:after {
+.content-main h1:after, .content-main h2:after, .content-main h4:after, .content-main h6:after {
     width: 100px;
     height: 1px;
     display: block;
@@ -220,4 +220,98 @@
 .img-empty-cart{
     height: 80px;
     object-fit: contain;
+}
+
+.limit-text-2{
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    display: -webkit-box; 
+    -webkit-line-clamp: 1; 
+    line-height: 16px; 
+    height: 18px; 
+    -webkit-box-orient: vertical
+}
+
+.mt-0{
+    margin-top: 0;
+}
+
+.mb-0{
+    margin-bottom: 0;
+}
+
+.quantity-holder{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.col-auto{
+    border: 1px solid #699c47;
+    background-color: #699c47;
+    max-height: 35px;
+    height: 35px;
+}
+
+.col-3{
+    width: 80px;
+    border: 1px solid #699c47;
+    max-height: 35px;
+    height: 35px;
+}
+
+.quantity-text-holder{
+    height: 35px !important;
+    min-height: 35px !important;
+}
+
+.border-top-1{
+    border-top: 1px solid #ccc;
+}
+
+.border-bottom-1{
+    border-bottom: 1px solid #ccc;
+}
+
+.border-1{
+    border: 1px solid #ccc;
+}
+
+.border-final-1{
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+
+.tr-price{
+    padding: 5px;
+}
+.font-bold{
+    font-weight: bold;
+}
+
+.cart-divider{
+    --background:#e6e6e6;
+    --color: #222;
+    border-top: 1px solid var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
+}
+
+.total-bg-table-tr{
+    background-color: #ddf8e8;
+}
+
+
+.cart-divider-total{
+    bottom: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #ddf8e8;
+    --background:#ddf8e8;
+    --color: #222;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    border-top: 1px solid var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
+}
+
+.final-table{
+    margin-bottom: 30px;
 }
