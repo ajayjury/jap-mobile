@@ -129,7 +129,7 @@ const Product: React.FC = () => {
                     size-sm="6"
                     size-xs="6" className='p-0' key={i}
                   >
-                      <Link className="no-underline" to="/register">
+                      <Link className="no-underline" to={`/products/${i}`}>
                         <ProductCard image={item.image} name={item.name} price={item.price} discounted_price={item.discounted_price} />
                       </Link>
                   </IonCol>)

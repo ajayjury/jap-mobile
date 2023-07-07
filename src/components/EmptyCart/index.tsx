@@ -1,7 +1,11 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCol, IonGrid, IonImg, IonRow, IonText } from "@ionic/react";
 import { Link } from "react-router-dom";
 
-const EmptyCart: React.FC = () => {
+type Props = {
+    type: 'cart'|'wishlist',
+};
+
+const EmptyCart: React.FC<Props> = ({type}) => {
     return (
         <IonGrid className="h-100">
             <IonRow className="h-100 ion-align-items-center ion-justify-content-center">
@@ -15,13 +19,13 @@ const EmptyCart: React.FC = () => {
                 >
                     <IonCard className="auth-card-background">
                         <IonImg
-                            src="/images/empty-cart.png"
+                            src={`/images/${type==='cart' ? 'empty-cart.png' : 'wishlist.png'}`}
                             alt="Logo"
-                            className="img-empty-cart"
+                            className="img-empty-cart mt-1"
                         ></IonImg>
-                        <IonCardHeader>
+                        <IonCardHeader className="pt-0 pb-0">
                             <IonText color="success" className="text-center">
-                                <p>Oops! No products available in cart. Please add products to cart</p>
+                                <p>Oops! No products available in {type}. Please add products to {type}</p>
                             </IonText>
                         </IonCardHeader>
                         <IonCardContent>

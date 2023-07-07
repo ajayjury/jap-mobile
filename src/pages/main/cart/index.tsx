@@ -1,24 +1,16 @@
 import {
     IonButton,
     IonText,
-    IonGrid,
     IonRow,
     IonCol,
-    IonList,
     IonToast,
-    IonSpinner,
     IonPage,
     IonContent,
-    IonImg,
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonItemGroup,
     IonItemDivider,
-    IonLabel,
     IonItem,
-    IonAccordionGroup,
-    IonAccordion,
     IonIcon,
     IonInput,
     IonCard,
@@ -31,9 +23,9 @@ import Input from "../../../components/Input";
 import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
 import { useState } from "react";
-import Auth from "../../../layout/Auth";
 import EmptyCart from "../../../components/EmptyCart";
-import { chevronForwardOutline, trashOutline } from "ionicons/icons";
+import { chevronForwardOutline } from "ionicons/icons";
+import CartItem from "../../../components/CartItem";
 
 const Cart: React.FC = () => {
     const [loading, setLoading] = useState(false);
@@ -49,7 +41,7 @@ const Cart: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen={false} forceOverscroll={true}>
-                {/* <EmptyCart /> */}
+                {/* <EmptyCart type="cart" /> */}
 
                 <IonCard className=" mt-2 mb-2">
                     <div className='ion-padding pt-0 pb-2'>
@@ -57,152 +49,43 @@ const Cart: React.FC = () => {
                             <h6>Cart Items</h6>
                         </div>
                     </div>
-                    <IonItemGroup>
-                        <IonItemDivider className="cart-divider">
-                            <IonRow className="ion-align-items-center ion-justify-content-between p-0 mt- w-100">
-                                <IonCol
-                                    size="10"
-                                    className='text-left'
-                                >
-                                    <IonLabel>Product 1</IonLabel>
-                                </IonCol>
-                                <IonCol
-                                    size="2"
-                                    className='text-right'
-                                >
-                                    <IonButton className="pagination-btn m-0" fill='outline' color="danger">
-                                        <IonIcon icon={trashOutline}></IonIcon>
-                                    </IonButton>
-                                </IonCol>
-                            </IonRow>
-                        </IonItemDivider>
-                        <div className="ion-padding">
-                            <IonRow className="ion-align-items-center p-0 mt- w-100">
-                                    <IonCol
-                                        size="3"
-                                        className='text-left'
-                                    >
-                                        <div className='product-img-container'>
-                                            <IonImg alt="product" className='' src='https://orgado-react.vercel.app/assets/img/trending/product/product-01.png' />
-                                        </div>
-                                    </IonCol>
-                                    <IonCol
-                                        size="9"
-                                        className='text-left'
-                                    >
-                                        <IonText color="success" className="text-left mb-0 pb-0">
-                                            <h6 className="text-left mb-0 pb-0 mt-0 pt-0">Product 1</h6>
-                                        </IonText>   
-                                        <p className="limit-text-2 mt-0 pt-0 mb-0 pb-0">Premium designed icons for use in web, iOS, Android, and desktop apps. Support for SVG and web font. Completely open source, MIT licensed and built by Ionic.</p>
-                                        <div className="quantity-holder">
-                                            <div className="col-auto">
-                                                <IonButton color={'success'} size="small" className="m-0 h-100 p-0">
-                                                    -
-                                                </IonButton>
-                                            </div>
-                                            <div className="col-3">
-                                                <IonInput aria-label="Quantity" value="1" className="text-center quantity-text-holder"></IonInput>
-                                            </div>
-                                            <div className="col-auto">
-                                                <IonButton color={'success'} size="small" className="m-0 h-100 p-0">
-                                                    +
-                                                </IonButton>
-                                            </div>
-                                        </div>
-                                    </IonCol>
-                            </IonRow>
-                            <table className="mt-1 w-100 border-1">
-                                <thead className="w-100">
-                                    <tr className="border-bottom-1 w-100">
-                                        <td className="text-left tr-price">Price:</td>
-                                        <td className="text-right tr-price">Rs. 100</td>
-                                    </tr>
-                                    <tr className="border-bottom-1 w-100">
-                                        <td className="text-left tr-price">Discount:</td>
-                                        <td className="text-right tr-price">Rs. 100</td>
-                                    </tr>
-                                    <tr className="border-bottom-1 w-100">
-                                        <td className="text-left tr-price font-bold">Total:</td>
-                                        <td className="text-right tr-price font-bold">Rs. 100</td>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </IonItemGroup>
-                    <IonItemGroup>
-                        <IonItemDivider className="cart-divider">
-                            <IonRow className="ion-align-items-center ion-justify-content-between p-0 mt- w-100">
-                                <IonCol
-                                    size="10"
-                                    className='text-left'
-                                >
-                                    <IonLabel>Product 1</IonLabel>
-                                </IonCol>
-                                <IonCol
-                                    size="2"
-                                    className='text-right'
-                                >
-                                    <IonButton className="pagination-btn m-0" fill='outline' color="danger">
-                                        <IonIcon icon={trashOutline}></IonIcon>
-                                    </IonButton>
-                                </IonCol>
-                            </IonRow>
-                        </IonItemDivider>
-                        <div className="ion-padding">
-                            <IonRow className="ion-align-items-center p-0 mt- w-100">
-                                    <IonCol
-                                        size="3"
-                                        className='text-left'
-                                    >
-                                        <div className='product-img-container'>
-                                            <IonImg alt="product" className='' src='https://orgado-react.vercel.app/assets/img/trending/product/product-01.png' />
-                                        </div>
-                                    </IonCol>
-                                    <IonCol
-                                        size="9"
-                                        className='text-left'
-                                    >
-                                        <IonText color="success" className="text-left mb-0 pb-0">
-                                            <h6 className="text-left mb-0 pb-0 mt-0 pt-0">Product 1</h6>
-                                        </IonText>   
-                                        <p className="limit-text-2 mt-0 pt-0 mb-0 pb-0">Premium designed icons for use in web, iOS, Android, and desktop apps. Support for SVG and web font. Completely open source, MIT licensed and built by Ionic.</p>
-                                        <div className="quantity-holder">
-                                            <div className="col-auto">
-                                                <IonButton color={'success'} size="small" className="m-0 h-100 p-0">
-                                                    -
-                                                </IonButton>
-                                            </div>
-                                            <div className="col-3">
-                                                <IonInput aria-label="Quantity" value="1" className="text-center quantity-text-holder"></IonInput>
-                                            </div>
-                                            <div className="col-auto">
-                                                <IonButton color={'success'} size="small" className="m-0 h-100 p-0">
-                                                    +
-                                                </IonButton>
-                                            </div>
-                                        </div>
-                                    </IonCol>
-                            </IonRow>
-                            <table className="mt-1 w-100 border-1">
-                                <thead className="w-100">
-                                    <tr className="border-bottom-1 w-100">
-                                        <td className="text-left tr-price">Price:</td>
-                                        <td className="text-right tr-price">Rs. 100</td>
-                                    </tr>
-                                    <tr className="border-bottom-1 w-100">
-                                        <td className="text-left tr-price">Discount:</td>
-                                        <td className="text-right tr-price">Rs. 100</td>
-                                    </tr>
-                                    <tr className="border-bottom-1 w-100">
-                                        <td className="text-left tr-price font-bold">Total:</td>
-                                        <td className="text-right tr-price font-bold">Rs. 100</td>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </IonItemGroup>
+                    <CartItem type="cart" />
+                    <CartItem type="cart" />
                 </IonCard>
 
+                <IonCard className="final-table mt-2 mb-2">
+                    <div className='ion-padding pt-0 pb-0'>
+                        <div className="content-main mt-1">
+                            <h6>Coupon Code</h6>
+                        </div>
+                    </div>
+                    <div className='ion-padding'>
+                        <IonRow className="ion-align-items-center ion-justify-content-between p-0 w-100">
+                            <IonCol
+                                size="9"
+                                className='text-left'
+                            >
+                                <IonItem>
+                                    <IonInput
+                                    className="coupon-code-input-holder"
+                                    clearInput={true}
+                                    placeholder="Enter Coupon Code"
+                                    ></IonInput>
+                                </IonItem>
+                            </IonCol>
+                            <IonCol
+                                size="3"
+                                className='text-right'
+                            >
+                                <IonButton className="m-0" size="small" fill='outline' color="success">
+                                    Apply
+                                </IonButton>
+                            </IonCol>
+                        </IonRow>
+                    </div>
+                    
+                </IonCard>
+                
                 <IonCard className="final-table mt-2 mb-2">
                     <div className='ion-padding pt-0 pb-2'>
                         <div className="content-main mt-1">

@@ -26,7 +26,7 @@
 .custom-main-header{
     padding-bottom: 10px;
     position: sticky;
-    z-index: 10;
+    z-index: 10099;
     top: 0px;
 }
 
@@ -243,7 +243,7 @@
 .quantity-holder{
     display: flex;
     align-items: center;
-    margin-top: 10px;
+    /* margin-top: 10px; */
 }
 
 .col-auto{
@@ -254,15 +254,17 @@
 }
 
 .col-3{
-    width: 80px;
+    width: 60px;
     border: 1px solid #699c47;
     max-height: 35px;
     height: 35px;
 }
 
 .quantity-text-holder{
-    height: 35px !important;
-    min-height: 35px !important;
+    height: 33px !important;
+    min-height: 33px !important;
+    --background: white;
+    --border-color: #699c47;
 }
 
 .border-top-1{
@@ -295,6 +297,16 @@
     border-top: 1px solid var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
 }
 
+.category-divider-end{
+    border-bottom: 1px solid var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
+}
+
+.category-divider{
+    --background:white;
+    --color: #222;
+    border-top: 1px solid var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
+}
+
 .total-bg-table-tr{
     background-color: #ddf8e8;
 }
@@ -312,6 +324,55 @@
     border-top: 1px solid var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
 }
 
+.review-divider-total{
+    bottom: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #ffffff;
+    --background:#ffffff;
+    --color: #222;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    border-top: 1px solid var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
+    border-bottom: 1px solid var(--ion-item-border-color, var(--ion-border-color, var(--ion-color-step-150, rgba(0, 0, 0, 0.13))));
+}
+
+.review-divider-total img{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .final-table{
     margin-bottom: 30px;
+}
+
+.final-table-2{
+    margin-bottom: 45px;
+}
+
+.coupon-code-input-holder{
+    min-height: 36px !important;
+}
+
+.d-flex{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.cart-btn{
+    max-height: 35px;
+    height: 35px;
+    margin-left: 5px;
+}
+
+.font-normal{
+    font-weight: normal;
+    line-height: 18px;
+    font-size: 14px;
+}
+
+code{
+    color: red;
 }

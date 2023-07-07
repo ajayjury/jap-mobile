@@ -49,6 +49,9 @@ import Register from './pages/auth/register';
 import Home from './pages/main/home';
 import Product from './pages/main/product';
 import Cart from './pages/main/cart';
+import Category from './pages/main/category';
+import Wishlist from './pages/main/wishlist';
+import ProductDetail from './pages/main/product/detail';
 
 setupIonicReact();
 
@@ -69,11 +72,20 @@ const App: React.FC = () => (
           <Route exact path="/home">
             <Home />
           </Route>
+          <Route exact path="/category/:slug">
+            <Category />
+          </Route>
           <Route exact path="/products">
             <Product />
           </Route>
+          <Route exact path="/products/:slug">
+            <ProductDetail />
+          </Route>
           <Route exact path="/cart">
             <Cart />
+          </Route>
+          <Route exact path="/wishlist">
+            <Wishlist />
           </Route>
           <Route exact path="/">
             <Redirect to="/home" />

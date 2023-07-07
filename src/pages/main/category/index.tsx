@@ -1,66 +1,12 @@
 import { IonGrid, IonRow, IonCol, IonPage, IonContent, IonImg, IonSegment, IonSegmentButton, IonLabel, ScrollDetail } from '@ionic/react';
-import { isPlatform } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
 import { useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Keyboard, Pagination, Scrollbar, Zoom } from 'swiper/modules';
-import MainHeader from '../../../components/MainHeader';
 import MainFooter from '../../../components/MainFooter';
-import CategoryCard from '../../../components/CategoryCard';
 import PaginationComponent from '../../../components/Pagination';
 import ProductCard from '../../../components/ProductCard';
-
-const images = [
-  'https://images.unsplash.com/photo-1580927752452-89d86da3fa0a',
-  'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
-  'https://images.unsplash.com/photo-1461749280684-dccba630e2f6',
-  'https://images.unsplash.com/photo-1488229297570-58520851e868',
-];
-
-const categories = [
-  {
-    name: 'category 1',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-01.png',
-  },
-  {
-    name: 'category 2',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-02.png',
-  },
-  {
-    name: 'category 3',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-03.png',
-  },
-  {
-    name: 'category 4',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-04.png',
-  },
-  {
-    name: 'category 5',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-05.png',
-  },
-  {
-    name: 'category 6',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-01.png',
-  },
-  {
-    name: 'category 7',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-02.png',
-  },
-  {
-    name: 'category 8',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-03.png',
-  },
-];
+import BackHeader from '../../../components/BackHeader';
 
 const products = [
   {
@@ -122,7 +68,7 @@ const segments = [
 
 
 
-const Home: React.FC = () => {
+const Category: React.FC = () => {
 
   const [showSubHeader, setShowSubHeader] = useState<boolean>(false);
 
@@ -136,35 +82,20 @@ const Home: React.FC = () => {
 
     return (
       <IonPage>
+        <BackHeader title='Category 1' link='/home' />
         <IonContent
           fullscreen={false}
           forceOverscroll={false}
           scrollEvents={true}
           onIonScroll={handleScroll}
         >
-          <MainHeader />
-          <Swiper 
-            modules={[Autoplay, Keyboard, Pagination, Scrollbar, Zoom]}
-            autoplay={true}
-            keyboard={true}
-            pagination={{
-              dynamicBullets: true,
-            }}
-            scrollbar={false}
-            zoom={false}
-          >
-            {
-              images.map((item, i) => <SwiperSlide key={i}>
-                  <IonImg
-                      src={item}
-                      alt="Sliders"
-                      style={{width: '100%'}}
-                  ></IonImg>
-              </SwiperSlide>)
-            }
-          </Swiper>
-          <div className={`content-main custom-main-header ${isPlatform('ios') ? 'pt-40' : 'pt-10'} ${showSubHeader ? isPlatform('ios') ? 'custom-main-header-bg pt-40' : 'custom-main-header-bg pt-10' : ''}`}>
-              <h1>JAIVIK AVAM PRAKRUTIK</h1>
+          <IonImg
+              src={'https://images.unsplash.com/photo-1488229297570-58520851e868'}
+              alt="Sliders"
+              style={{width: '100%'}}
+          ></IonImg>
+          <div className='content-main pt-10'>
+              <h1>Category 1</h1>
           </div>
           <div className='ion-padding pt-0'>
             <div className="content-main">
@@ -181,33 +112,9 @@ const Home: React.FC = () => {
                 nulla sit amet erat malesuada euismod vel a nulla.
               </p>
             </div>
-            <div className="content-main">
-              <h2>Top Category</h2>
-            </div>
-            <IonGrid className="mt-1 p-0">
-                <IonRow className="ion-align-items-center ion-justify-content-between p-0">
-
-                  {
-                    categories.map((item, i) => <IonCol
-                    size="6"
-                    size-xl="3"
-                    size-lg="3"
-                    size-md="4"
-                    size-sm="6"
-                    size-xs="6" className='p-0' key={i}
-                  >
-                      <Link className="no-underline" to={`/category/${i}`}>
-                        <CategoryCard image={item.image} name={item.name} items={item.items} />
-                      </Link>
-                  </IonCol>)
-                  }
-
-                </IonRow>
-                <PaginationComponent />
-            </IonGrid>
 
             <div className="content-main mt-2 mb-1">
-              <h2>Our Products</h2>
+              <h2>Products</h2>
             </div>
 
             <IonSegment scrollable={true} value="default" color="success">
@@ -247,4 +154,4 @@ const Home: React.FC = () => {
     );
   };
   
-export default Home;
+export default Category;
