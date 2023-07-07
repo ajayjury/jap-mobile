@@ -48,6 +48,7 @@ import ForgotPassword from './pages/auth/forgot-password';
 import Register from './pages/auth/register';
 import Home from './pages/main/home';
 import Product from './pages/main/product';
+import Cart from './pages/main/cart';
 
 setupIonicReact();
 
@@ -71,6 +72,9 @@ const App: React.FC = () => (
           <Route exact path="/products">
             <Product />
           </Route>
+          <Route exact path="/cart">
+            <Cart />
+          </Route>
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
@@ -87,7 +91,7 @@ const App: React.FC = () => (
             <IonLabel>Products</IonLabel>
           </IonTabButton>
 
-          <IonTabButton className='main-tabs' tab="register" href="/register">
+          <IonTabButton className='main-tabs' tab="cart" href="/cart">
             <>
             <IonIcon icon={cartOutline} />
             <IonBadge color="success">2</IonBadge>

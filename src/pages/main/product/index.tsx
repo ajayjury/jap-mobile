@@ -1,67 +1,13 @@
-import { IonGrid, IonRow, IonCol, IonPage, IonContent, IonImg, IonSegment, IonSegmentButton, IonLabel, ScrollDetail, IonHeader, IonToolbar, IonSearchbar, IonTitle, IonButton, IonIcon, IonList, IonItem, IonSelect, IonSelectOption, IonText } from '@ionic/react';
-import { isPlatform } from '@ionic/react';
+import { IonGrid, IonRow, IonCol, IonPage, IonContent, IonLabel, IonHeader, IonToolbar, IonSearchbar, IonTitle, IonButton, IonIcon, IonList, IonItem, IonSelect, IonSelectOption, IonModal, IonButtons, IonAccordionGroup, IonAccordion, IonRange, IonCheckbox } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
-import { useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Keyboard, Pagination, Scrollbar, Zoom } from 'swiper/modules';
-import MainHeader from '../../../components/MainHeader';
+import { useRef, useState } from 'react';
 import MainFooter from '../../../components/MainFooter';
-import CategoryCard from '../../../components/CategoryCard';
 import PaginationComponent from '../../../components/Pagination';
 import ProductCard from '../../../components/ProductCard';
-import { filterOutline, funnelOutline } from 'ionicons/icons';
-
-const images = [
-  'https://images.unsplash.com/photo-1580927752452-89d86da3fa0a',
-  'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
-  'https://images.unsplash.com/photo-1461749280684-dccba630e2f6',
-  'https://images.unsplash.com/photo-1488229297570-58520851e868',
-];
-
-const categories = [
-  {
-    name: 'category 1',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-01.png',
-  },
-  {
-    name: 'category 2',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-02.png',
-  },
-  {
-    name: 'category 3',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-03.png',
-  },
-  {
-    name: 'category 4',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-04.png',
-  },
-  {
-    name: 'category 5',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-05.png',
-  },
-  {
-    name: 'category 6',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-01.png',
-  },
-  {
-    name: 'category 7',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-02.png',
-  },
-  {
-    name: 'category 8',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-03.png',
-  },
-];
+import { filterOutline, starOutline } from 'ionicons/icons';
+import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 
 const products = [
   {
@@ -102,28 +48,25 @@ const products = [
   },
 ];
 
-const segments = [
-  {
-    name: 'All',
-    value: 'default'
-  },
-  {
-    name: 'New Arrival',
-    value: 'new_arrival'
-  },
-  {
-    name: 'Best Sale',
-    value: 'best_sale'
-  },
-  {
-    name: 'Featured',
-    value: 'featured'
-  },
-];
-
 
 
 const Product: React.FC = () => {
+
+  const modal = useRef<HTMLIonModalElement>(null);
+
+  const [message, setMessage] = useState(
+    'This modal example uses triggers to automatically open a modal when the button is clicked.'
+  );
+
+  function confirm() {
+    modal.current?.dismiss('confirm');
+  }
+
+  function onWillDismiss(ev: CustomEvent<OverlayEventDetail>) {
+    if (ev.detail.role === 'confirm') {
+      setMessage(`Hello, ${ev.detail.data}!`);
+    }
+  }
 
     return (
       <IonPage>
@@ -163,7 +106,7 @@ const Product: React.FC = () => {
                       <IonCol
                           size="6" className='p-0 text-right'
                       >
-                          <IonButton size="small" color='success' shape='round' fill='outline'>
+                          <IonButton id="open-modal" size="small" color='success' shape='round' fill='outline'>
                             <IonIcon slot="end" icon={filterOutline}></IonIcon>
                             Filter
                           </IonButton>
@@ -197,6 +140,76 @@ const Product: React.FC = () => {
             </IonGrid>
 
           </div>
+          <IonModal ref={modal} trigger="open-modal" onWillDismiss={(ev) => onWillDismiss(ev)}>
+            <IonHeader>
+              <IonToolbar>
+                <IonTitle>Filters</IonTitle>
+                <IonButtons slot="end">
+                  <IonButton  size="small" color='success' shape='round' fill='outline' strong={true} onClick={() => confirm()}>
+                    Apply
+                  </IonButton>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
+            <IonContent>
+              <IonAccordionGroup>
+                <IonAccordion value="first">
+                  <IonItem slot="header" color="light">
+                    <IonLabel>Special Features</IonLabel>
+                  </IonItem>
+                  <div className="ion-padding" slot="content">
+                    <IonCheckbox className='mb-1' labelPlacement="end">New Arrival</IonCheckbox>
+                    <br/>
+                    <IonCheckbox className='mb-1' labelPlacement="end">Featured</IonCheckbox>
+                    <br/>
+                    <IonCheckbox className='mb-1' labelPlacement="end">Best Sale</IonCheckbox>
+                    <br/>
+                  </div>
+                </IonAccordion>
+                <IonAccordion value="second">
+                  <IonItem slot="header" color="light">
+                    <IonLabel>Price</IonLabel>
+                  </IonItem>
+                  <div className="ion-padding" slot="content">
+                  <IonRange
+                    aria-label="Dual Knobs Range"
+                    dualKnobs={true}
+                    value={{
+                      lower: 20,
+                      upper: 80,
+                    }}
+                  ></IonRange>
+                  </div>
+                </IonAccordion>
+                <IonAccordion value="third">
+                  <IonItem slot="header" color="light">
+                    <IonLabel>Categories</IonLabel>
+                  </IonItem>
+                  <div className="ion-padding" slot="content">
+                    <IonCheckbox className='mb-1' labelPlacement="end">Catgeory 1</IonCheckbox>
+                    <br/>
+                    <IonCheckbox className='mb-1' labelPlacement="end">Catgeory 2</IonCheckbox>
+                    <br/>
+                    <IonCheckbox className='mb-1' labelPlacement="end">Catgeory 3</IonCheckbox>
+                  </div>
+                </IonAccordion>
+                <IonAccordion value="fourth">
+                  <IonItem slot="header" color="light">
+                    <IonLabel>Reviews</IonLabel>
+                  </IonItem>
+                  <div className="ion-padding" slot="content">
+                    <IonCheckbox className='mb-1' labelPlacement="end"><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon> & above</IonCheckbox>
+                    <br/>
+                    <IonCheckbox className='mb-1' labelPlacement="end"><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon> & above</IonCheckbox>
+                    <br/>
+                    <IonCheckbox className='mb-1' labelPlacement="end"><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon> & above</IonCheckbox>
+                    <br/>
+                    <IonCheckbox className='mb-1' labelPlacement="end"><IonIcon icon={starOutline}></IonIcon> & above</IonCheckbox>
+                  </div>
+                </IonAccordion>
+              </IonAccordionGroup>
+            </IonContent>
+          </IonModal>
           <MainFooter />
         </IonContent>
       </IonPage>
