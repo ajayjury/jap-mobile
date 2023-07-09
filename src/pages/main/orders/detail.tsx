@@ -33,9 +33,16 @@ const OrderDetail: React.FC = () => {
                             <h6>Order Information</h6>
                         </div>
                     </div>
-                    <div className='ion-padding'>
- 
-                    </div>
+                    <IonItem lines="full">
+                        <IonLabel className="ion-text-wrap">
+                            <p><code>Order ID: </code>22</p>
+                            <p><code>Reciept: </code>68ddf3f0-2d46-4a36-b05d-5a135e8e3d35</p>
+                            <p><code>Placed:</code> 3 weeks ago</p>
+                            <p><code>Payment Mode:</code> ONLINE</p>
+                            <p><code>Order Status:</code> OUT FOR DELIVERY</p>
+                            <p><code>Coupon:</code> ABC10 (10%)</p>
+                        </IonLabel>
+                    </IonItem>
                     
                 </IonCard>
 
@@ -76,8 +83,11 @@ const OrderDetail: React.FC = () => {
                         </IonItem>
                         <IonItem lines="inset">
                             <IonIcon icon={homeOutline} slot="start"></IonIcon>
-                            <IonLabel>
-                                <p>7892156160</p>
+                            <IonLabel className="ion-text-wrap">
+                                <p>Room 502, Mythri prestige apartment</p>
+                                <p>Saraswatipuram cross, Arekere</p>
+                                <p>Bangalore - 560076</p>
+                                <p>karnataka, India</p>
                             </IonLabel>
                         </IonItem>
                     </div>
