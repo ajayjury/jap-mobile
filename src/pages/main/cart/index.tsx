@@ -284,7 +284,7 @@ const Cart: React.FC = () => {
                 <IonCard className="final-table mt-2 mb-2">
                     <div className='ion-padding pt-0 pb-2'>
                         <div className="content-main mt-1">
-                            <h6>Total Price</h6>
+                            <h6>Pricing Information</h6>
                         </div>
                     </div>
                     <table className="w-100 border-final-1">
@@ -339,7 +339,7 @@ const Cart: React.FC = () => {
                             size="6"
                             className='text-right'
                         >
-                            <IonButton id="open-modal" className="pagination-btn m-0" fill='solid' color="success">
+                            <IonButton id="checkout-modal" className="pagination-btn m-0" fill='solid' color="success">
                                 Checkout
                                 <IonIcon slot="end" icon={chevronForwardOutline}></IonIcon>
                             </IonButton>
@@ -365,7 +365,7 @@ const Cart: React.FC = () => {
                     ></IonToast>
                 </div>
 
-                <IonModal ref={modal} trigger="open-modal" onWillDismiss={(ev) => onWillDismiss(ev)}>
+                <IonModal ref={modal} trigger="checkout-modal" onWillDismiss={(ev) => onWillDismiss(ev)}>
                     <IonHeader>
                         <IonToolbar>
                             <IonTitle>Checkout</IonTitle>

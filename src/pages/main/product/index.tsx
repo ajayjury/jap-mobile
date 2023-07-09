@@ -106,7 +106,7 @@ const Product: React.FC = () => {
                       <IonCol
                           size="6" className='p-0 text-right'
                       >
-                          <IonButton id="open-modal" size="small" color='success' shape='round' fill='outline'>
+                          <IonButton id="filter-modal" size="small" color='success' shape='round' fill='outline'>
                             <IonIcon slot="end" icon={filterOutline}></IonIcon>
                             Filter
                           </IonButton>
@@ -140,7 +140,7 @@ const Product: React.FC = () => {
             </IonGrid>
 
           </div>
-          <IonModal ref={modal} trigger="open-modal" onWillDismiss={(ev) => onWillDismiss(ev)}>
+          <IonModal ref={modal} trigger="filter-modal" onWillDismiss={(ev) => onWillDismiss(ev)}>
             <IonHeader>
               <IonToolbar>
                 <IonTitle>Filters</IonTitle>

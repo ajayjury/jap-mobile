@@ -55,6 +55,8 @@ import ProductDetail from './pages/main/product/detail';
 import Account from './pages/main/account';
 import Profile from './pages/main/profile';
 import Setting from './pages/main/setting';
+import Order from './pages/main/orders';
+import OrderDetail from './pages/main/orders/detail';
 
 setupIonicReact();
 
@@ -98,6 +100,12 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/setting">
             <Setting />
+          </Route>
+          <Route exact path="/orders">
+            <Order />
+          </Route>
+          <Route exact path="/orders/:receipt">
+            <OrderDetail />
           </Route>
           <Route exact path="/">
             <Redirect to="/home" />
