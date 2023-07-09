@@ -52,6 +52,9 @@ import Cart from './pages/main/cart';
 import Category from './pages/main/category';
 import Wishlist from './pages/main/wishlist';
 import ProductDetail from './pages/main/product/detail';
+import Account from './pages/main/account';
+import Profile from './pages/main/profile';
+import Setting from './pages/main/setting';
 
 setupIonicReact();
 
@@ -87,6 +90,15 @@ const App: React.FC = () => (
           <Route exact path="/wishlist">
             <Wishlist />
           </Route>
+          <Route exact path="/account">
+            <Account />
+          </Route>
+          <Route exact path="/profile">
+            <Profile />
+          </Route>
+          <Route exact path="/setting">
+            <Setting />
+          </Route>
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
@@ -111,7 +123,7 @@ const App: React.FC = () => (
             <IonLabel>Cart</IonLabel>
           </IonTabButton>
 
-          <IonTabButton className='main-tabs' tab="login" href="/login">
+          <IonTabButton className='main-tabs' tab="account" href="/account">
             <IonIcon icon={personCircleOutline} />
             <IonLabel>Account</IonLabel>
           </IonTabButton>

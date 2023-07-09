@@ -24,7 +24,7 @@ const Wishlist: React.FC = () => {
 
     return (
         <IonPage>
-            <BackHeader title='Wishlist' link='/home' />
+            <BackHeader title='Wishlist' link='/account' />
             <IonContent fullscreen={false} forceOverscroll={true}>
                 {/* <EmptyCart type="wishlist" /> */}
 
