@@ -90,7 +90,7 @@ const Category: React.FC = () => {
           onIonScroll={handleScroll}
         >
           <IonImg
-              src={'https://images.unsplash.com/photo-1488229297570-58520851e868'}
+              src={'/images/banner2.jpg'}
               alt="Sliders"
               style={{width: '100%'}}
           ></IonImg>

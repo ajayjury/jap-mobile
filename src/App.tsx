@@ -131,7 +131,7 @@ const App: React.FC = () => (
             <IonLabel>Cart</IonLabel>
           </IonTabButton>
 
-          <IonTabButton className='main-tabs' tab="account" href="/account">
+          <IonTabButton className='main-tabs' tab="account" href="/login">
             <IonIcon icon={personCircleOutline} />
             <IonLabel>Account</IonLabel>
           </IonTabButton>

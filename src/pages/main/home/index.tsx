@@ -13,10 +13,9 @@ import PaginationComponent from '../../../components/Pagination';
 import ProductCard from '../../../components/ProductCard';
 
 const images = [
-  'https://images.unsplash.com/photo-1580927752452-89d86da3fa0a',
-  'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
-  'https://images.unsplash.com/photo-1461749280684-dccba630e2f6',
-  'https://images.unsplash.com/photo-1488229297570-58520851e868',
+  '/images/banner1.jpg',
+  '/images/banner3.avif',
+  '/images/banner5.avif',
 ];
 
 const categories = [

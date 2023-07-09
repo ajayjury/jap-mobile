@@ -18,10 +18,9 @@ import Input from '../../../components/Input';
 import { ErrorMessage } from '@hookform/error-message';
 
 const images = [
-  'https://images.unsplash.com/photo-1580927752452-89d86da3fa0a',
-  'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
-  'https://images.unsplash.com/photo-1461749280684-dccba630e2f6',
-  'https://images.unsplash.com/photo-1488229297570-58520851e868',
+  '/images/product1.png',
+  '/images/product2.png',
+  '/images/product3.jpg',
 ];
 
 const fields = [
