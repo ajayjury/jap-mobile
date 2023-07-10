@@ -1,6 +1,6 @@
 import { IonButton, IonCard, IonCardHeader, IonImg, IonText } from "@ionic/react";
 
-type Props = {
+export type Props = {
     name: string,
     image: string,
     price: string,
@@ -8,6 +8,7 @@ type Props = {
 };
 
 const ProductCard: React.FC<Props> = ({image, name, price, discounted_price}) => {
+    
     return (
         <IonCard className='m-1 p-0 product-card'>
             <div className='product-img-container'>
@@ -18,7 +19,7 @@ const ProductCard: React.FC<Props> = ({image, name, price, discounted_price}) =>
                     <h5 className='p-0 m-0 text-capitalize'>{name}</h5>
                 </IonText>
                 <IonText className='text-center'>
-                    <p className='p-0 m-0'><s>{price}</s> <b>{discounted_price}</b></p>
+                    <p className='p-0 m-0'><s>{price}</s><br/> <b>{discounted_price}</b></p>
                 </IonText>
             </IonCardHeader>
             <div className="text-center mb-1">

@@ -1,51 +1,10 @@
-import { IonGrid, IonRow, IonCol, IonPage, IonContent, IonImg, IonSegment, IonSegmentButton, IonLabel, ScrollDetail } from '@ionic/react';
-import { Link } from 'react-router-dom';
+import { IonPage, IonContent, IonImg } from '@ionic/react';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
-import { useState } from 'react';
 import MainFooter from '../../../components/MainFooter';
-import PaginationComponent from '../../../components/Pagination';
-import ProductCard from '../../../components/ProductCard';
 import BackHeader from '../../../components/BackHeader';
-
-const products = [
-  {
-    name: 'product 1',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-01.png',
-  },
-  {
-    name: 'product 2',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-02.png',
-  },
-  {
-    name: 'product 3',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-03.png',
-  },
-  {
-    name: 'product 4',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-04.png',
-  },
-  {
-    name: 'product 5',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-05.png',
-  },
-  {
-    name: 'product 6',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-01.png',
-  },
-];
+import ProductSegment from '../../../components/ProductSegment';
+import { RouteComponentProps } from "react-router";
 
 const segments = [
   {
@@ -66,19 +25,14 @@ const segments = [
   },
 ];
 
+interface CategoryProps extends RouteComponentProps<{
+  slug: string;
+}> {}
 
 
-const Category: React.FC = () => {
 
-  const [showSubHeader, setShowSubHeader] = useState<boolean>(false);
-
-  function handleScroll(ev: CustomEvent<ScrollDetail>) {
-    if(ev.detail.scrollTop>475){
-      setShowSubHeader(true);
-    }else{
-      setShowSubHeader(false);
-    }
-  }
+const Category: React.FC<CategoryProps> = ({match}) => {
+    
 
     return (
       <IonPage>
@@ -86,8 +40,6 @@ const Category: React.FC = () => {
         <IonContent
           fullscreen={false}
           forceOverscroll={false}
-          scrollEvents={true}
-          onIonScroll={handleScroll}
         >
           <IonImg
               src={'/images/banner2.jpg'}
@@ -113,39 +65,7 @@ const Category: React.FC = () => {
               </p>
             </div>
 
-            <div className="content-main mt-2 mb-1">
-              <h2>Products</h2>
-            </div>
-
-            <IonSegment scrollable={true} value="default" color="success">
-              {
-                segments.map((item, i)=><IonSegmentButton value={item.value} key={i}>
-                  <IonLabel>{item.name}</IonLabel>
-                </IonSegmentButton>)
-              }
-            </IonSegment>
-
-            <IonGrid className="mt-1 p-0">
-                <IonRow className="ion-align-items-center ion-justify-content-between p-0">
-
-                  {
-                    products.map((item, i) => <IonCol
-                    size="6"
-                    size-xl="3"
-                    size-lg="3"
-                    size-md="4"
-                    size-sm="6"
-                    size-xs="6" className='p-0' key={i}
-                  >
-                      <Link className="no-underline" to={`/products/${i}`}>
-                        <ProductCard image={item.image} name={item.name} price={item.price} discounted_price={item.discounted_price} />
-                      </Link>
-                  </IonCol>)
-                  }
-
-                </IonRow>
-                <PaginationComponent />
-            </IonGrid>
+            <ProductSegment category_slug={match.params.slug} />
 
           </div>
           <MainFooter />

@@ -136,7 +136,7 @@ const Product: React.FC = () => {
                   }
 
                 </IonRow>
-                <PaginationComponent />
+                <PaginationComponent prev={()=>alert('prev')} next={()=>alert('next')} />
             </IonGrid>
 
           </div>

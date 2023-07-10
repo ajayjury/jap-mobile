@@ -1,6 +1,6 @@
 import { IonButton, IonCard, IonCardHeader, IonImg, IonText } from "@ionic/react";
 
-type Props = {
+export type Props = {
     name: string,
     image: string,
     items: string,

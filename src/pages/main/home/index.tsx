@@ -1,16 +1,15 @@
-import { IonGrid, IonRow, IonCol, IonPage, IonContent, IonImg, IonSegment, IonSegmentButton, IonLabel, ScrollDetail } from '@ionic/react';
+import { IonGrid, IonRow, IonCol, IonPage, IonContent, ScrollDetail } from '@ionic/react';
 import { isPlatform } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
 import { useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Keyboard, Pagination, Scrollbar, Zoom } from 'swiper/modules';
 import MainHeader from '../../../components/MainHeader';
 import MainFooter from '../../../components/MainFooter';
 import CategoryCard from '../../../components/CategoryCard';
 import PaginationComponent from '../../../components/Pagination';
-import ProductCard from '../../../components/ProductCard';
+import Slider from '../../../components/Slider';
+import ProductSegment from '../../../components/ProductSegment';
 
 const images = [
   '/images/banner1.jpg',
@@ -61,64 +60,6 @@ const categories = [
   },
 ];
 
-const products = [
-  {
-    name: 'product 1',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-01.png',
-  },
-  {
-    name: 'product 2',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-02.png',
-  },
-  {
-    name: 'product 3',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-03.png',
-  },
-  {
-    name: 'product 4',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-04.png',
-  },
-  {
-    name: 'product 5',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-05.png',
-  },
-  {
-    name: 'product 6',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-01.png',
-  },
-];
-
-const segments = [
-  {
-    name: 'All',
-    value: 'default'
-  },
-  {
-    name: 'New Arrival',
-    value: 'new_arrival'
-  },
-  {
-    name: 'Best Sale',
-    value: 'best_sale'
-  },
-  {
-    name: 'Featured',
-    value: 'featured'
-  },
-];
-
 
 
 const Home: React.FC = () => {
@@ -142,26 +83,7 @@ const Home: React.FC = () => {
           onIonScroll={handleScroll}
         >
           <MainHeader />
-          <Swiper 
-            modules={[Autoplay, Keyboard, Pagination, Scrollbar, Zoom]}
-            autoplay={true}
-            keyboard={true}
-            pagination={{
-              dynamicBullets: true,
-            }}
-            scrollbar={false}
-            zoom={false}
-          >
-            {
-              images.map((item, i) => <SwiperSlide key={i}>
-                  <IonImg
-                      src={item}
-                      alt="Sliders"
-                      style={{width: '100%'}}
-                  ></IonImg>
-              </SwiperSlide>)
-            }
-          </Swiper>
+          <Slider images={images} />
           <div className={`content-main custom-main-header ${isPlatform('ios') ? 'pt-40' : 'pt-10'} ${showSubHeader ? isPlatform('ios') ? 'custom-main-header-bg pt-40' : 'custom-main-header-bg pt-10' : ''}`}>
               <h1>JAIVIK AVAM PRAKRUTIK</h1>
           </div>
@@ -202,42 +124,10 @@ const Home: React.FC = () => {
                   }
 
                 </IonRow>
-                <PaginationComponent />
+                <PaginationComponent prev={()=>alert('prev')} next={()=>alert('next')} />
             </IonGrid>
 
-            <div className="content-main mt-2 mb-1">
-              <h2>Our Products</h2>
-            </div>
-
-            <IonSegment scrollable={true} value="default" color="success">
-              {
-                segments.map((item, i)=><IonSegmentButton value={item.value} key={i}>
-                  <IonLabel>{item.name}</IonLabel>
-                </IonSegmentButton>)
-              }
-            </IonSegment>
-
-            <IonGrid className="mt-1 p-0">
-                <IonRow className="ion-align-items-center ion-justify-content-between p-0">
-
-                  {
-                    products.map((item, i) => <IonCol
-                    size="6"
-                    size-xl="3"
-                    size-lg="3"
-                    size-md="4"
-                    size-sm="6"
-                    size-xs="6" className='p-0' key={i}
-                  >
-                      <Link className="no-underline" to={`/products/${i}`}>
-                        <ProductCard image={item.image} name={item.name} price={item.price} discounted_price={item.discounted_price} />
-                      </Link>
-                  </IonCol>)
-                  }
-
-                </IonRow>
-                <PaginationComponent />
-            </IonGrid>
+            <ProductSegment />
 
           </div>
           <MainFooter />

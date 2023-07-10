@@ -37,7 +37,7 @@ const Order: React.FC = () => {
                 <div className='ion-padding pt-0'>
 
                     <IonGrid className="mt-1 p-0">
-                        <Pagination />
+                        <Pagination prev={()=>alert('prev')} next={()=>alert('next')} />
                     </IonGrid>
 
                 </div>

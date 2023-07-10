@@ -4,11 +4,8 @@ import { Link } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
 import { useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Keyboard, Pagination, Scrollbar, Zoom } from 'swiper/modules';
-import MainHeader from '../../../components/MainHeader';
 import MainFooter from '../../../components/MainFooter';
-import { bookmarkOutline, chevronForwardOutline, starOutline } from 'ionicons/icons';
+import { bookmarkOutline } from 'ionicons/icons';
 import BackHeader from '../../../components/BackHeader';
 import ReviewItem from '../../../components/ReviewItem';
 import * as yup from "yup";
@@ -16,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Input from '../../../components/Input';
 import { ErrorMessage } from '@hookform/error-message';
+import Slider from '../../../components/Slider';
 
 const images = [
   '/images/product1.png',
@@ -125,26 +123,7 @@ const ProductDetail: React.FC = () => {
           scrollEvents={true}
           onIonScroll={handleScroll}
         >
-          <Swiper 
-            modules={[Autoplay, Keyboard, Pagination, Scrollbar, Zoom]}
-            autoplay={true}
-            keyboard={true}
-            pagination={{
-              dynamicBullets: true,
-            }}
-            scrollbar={false}
-            zoom={false}
-          >
-            {
-              images.map((item, i) => <SwiperSlide key={i}>
-                  <IonImg
-                      src={item}
-                      alt="Sliders"
-                      style={{width: '100%'}}
-                  ></IonImg>
-              </SwiperSlide>)
-            }
-          </Swiper>
+          <Slider images={images} />
           <div className={`content-main custom-main-header pt-10 ${showSubHeader ? isPlatform('ios') ? 'custom-main-header-bg' : 'custom-main-header-bg' : ''}`}>
               {/* <h1>JAIVIK AVAM PRAKRUTIK</h1> */}
               <div className="ion-padding pt-0 pb-0">

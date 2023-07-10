@@ -77,9 +77,7 @@ const App: React.FC = () => (
           <Route exact path="/home">
             <Home />
           </Route>
-          <Route exact path="/category/:slug">
-            <Category />
-          </Route>
+          <Route exact path="/category/:slug" component={Category}></Route>
           <Route exact path="/products">
             <Product />
           </Route>
