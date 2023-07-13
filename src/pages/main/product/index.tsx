@@ -2,12 +2,16 @@ import { IonGrid, IonRow, IonCol, IonPage, IonContent, IonLabel, IonHeader, IonT
 import { Link } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
-import { useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import MainFooter from '../../../components/MainFooter';
 import PaginationComponent from '../../../components/Pagination';
 import ProductCard from '../../../components/ProductCard';
 import { filterOutline, starOutline } from 'ionicons/icons';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
+import ProductGrid from '../../../components/ProductGrid';
+import { usePagination } from '../../../hooks/usePagination';
+import { Meta, ProductSegmentState } from '../../../helper/types';
+import { AxiosResponse } from 'axios';
 
 const products = [
   {
@@ -52,6 +56,15 @@ const products = [
 
 const Product: React.FC = () => {
 
+  const [loading, setLoading] = useState<boolean>(false)
+  const [search, setSearch] = useState<string|null|undefined>('')
+  const {page, setPage, prevHandler, nextHandler} = usePagination();
+  const [products, setProducts] = useState<ProductSegmentState[]|[]>([]);
+  const [meta, setMeta] = useState<Meta>({
+      next_disabled: true,
+      prev_disabled: true,
+  });
+
   const modal = useRef<HTMLIonModalElement>(null);
 
   const [message, setMessage] = useState(
@@ -68,11 +81,51 @@ const Product: React.FC = () => {
     }
   }
 
+  useEffect(() => {
+    fetchProducts();
+    return () => {}
+  }, [page, search])
+
+  const fetchProducts = useCallback(
+    async () => {
+      setLoading(true);
+      try {
+          let category_slug_link = api_routes.products+`?page=${page}`;
+          if(search){
+            category_slug_link+=`&filter[search]=${search}`
+          }else{
+            category_slug_link+=``
+          }
+          const response:AxiosResponse = await axiosPublic.get(category_slug_link);
+          setProducts([...response.data.data])
+          const metaResp = meta
+          if(response.data.links.next){
+              metaResp.next_disabled = false
+          }else{
+              metaResp.next_disabled = true
+          }
+          if(response.data.links.prev){
+              metaResp.prev_disabled = false
+          }else{
+              metaResp.prev_disabled = true
+          }
+          setMeta({
+              ...metaResp
+          })
+      } catch (error) {
+          console.log(error);
+      }finally{
+          setLoading(false);
+      }
+    },
+    [page, search],
+  )
+
     return (
       <IonPage>
         <IonHeader translucent={true} className='main-header-background'>
           <IonToolbar className='main-header-background'> 
-            <IonSearchbar></IonSearchbar>
+            <IonSearchbar showClearButton="focus" debounce={500} onIonInput={(ev) => setSearch(ev.detail.value)}></IonSearchbar>
           </IonToolbar>
         </IonHeader>
         <IonContent
@@ -117,27 +170,7 @@ const Product: React.FC = () => {
 
           <div className='ion-padding pt-0'>
 
-            <IonGrid className="mt-1 p-0">
-                <IonRow className="ion-align-items-center ion-justify-content-between p-0">
-
-                  {
-                    products.map((item, i) => <IonCol
-                    size="6"
-                    size-xl="3"
-                    size-lg="3"
-                    size-md="4"
-                    size-sm="6"
-                    size-xs="6" className='p-0' key={i}
-                  >
-                      <Link className="no-underline" to={`/products/${i}`}>
-                        <ProductCard image={item.image} name={item.name} price={item.price} discounted_price={item.discounted_price} />
-                      </Link>
-                  </IonCol>)
-                  }
-
-                </IonRow>
-                <PaginationComponent prev={()=>alert('prev')} next={()=>alert('next')} />
-            </IonGrid>
+            <ProductGrid loading={loading} products={products} prevHandler={prevHandler} nextHandler={nextHandler} meta={meta} />
 
           </div>
           <IonModal ref={modal} trigger="filter-modal" onWillDismiss={(ev) => onWillDismiss(ev)}>
