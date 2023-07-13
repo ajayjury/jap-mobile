@@ -65,46 +65,20 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-          <Route exact path="/forgot_password">
-            <ForgotPassword />
-          </Route>
-          <Route exact path="/register">
-            <Register />
-          </Route>
-          <Route exact path="/home">
-            <Home />
-          </Route>
+          <Route exact path="/login" component={Login}></Route>
+          <Route exact path="/forgot_password" component={ForgotPassword}></Route>
+          <Route exact path="/register" component={Register}></Route>
+          <Route exact path="/home" component={Home}></Route>
           <Route exact path="/category/:slug" component={Category}></Route>
-          <Route exact path="/products">
-            <Product />
-          </Route>
-          <Route exact path="/products/:slug">
-            <ProductDetail />
-          </Route>
-          <Route exact path="/cart">
-            <Cart />
-          </Route>
-          <Route exact path="/wishlist">
-            <Wishlist />
-          </Route>
-          <Route exact path="/account">
-            <Account />
-          </Route>
-          <Route exact path="/profile">
-            <Profile />
-          </Route>
-          <Route exact path="/setting">
-            <Setting />
-          </Route>
-          <Route exact path="/orders">
-            <Order />
-          </Route>
-          <Route exact path="/orders/:receipt">
-            <OrderDetail />
-          </Route>
+          <Route exact path="/products" component={Product}></Route>
+          <Route exact path="/products/:slug" component={ProductDetail}></Route>
+          <Route exact path="/cart" component={Cart}></Route>
+          <Route exact path="/wishlist" component={Wishlist}></Route>
+          <Route exact path="/account" component={Account}></Route>
+          <Route exact path="/profile" component={Profile}></Route>
+          <Route exact path="/setting" component={Setting}></Route>
+          <Route exact path="/orders" component={Order}></Route>
+          <Route exact path="/orders/:receipt" component={OrderDetail}></Route>
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
@@ -129,7 +103,7 @@ const App: React.FC = () => (
             <IonLabel>Cart</IonLabel>
           </IonTabButton>
 
-          <IonTabButton className='main-tabs' tab="account" href="/login">
+          <IonTabButton className='main-tabs' tab="account" href="/account">
             <IonIcon icon={personCircleOutline} />
             <IonLabel>Account</IonLabel>
           </IonTabButton>

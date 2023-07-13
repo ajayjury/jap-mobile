@@ -2,44 +2,24 @@ import { IonCol, IonGrid, IonLabel, IonRow, IonSegment, IonSegmentButton, IonTex
 import { Link } from "react-router-dom";
 import ProductCard from "../ProductCard";
 import Pagination from "../Pagination";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api_routes } from "../../helper/routes";
 import { axiosPublic } from "../../../axios";
 import { AxiosResponse } from "axios";
 import LoadingCard from "../LoadingCard";
+import { CategorySlugProps, Meta, ProductSegmentState } from "../../helper/types";
+import { usePagination } from "../../hooks/usePagination";
+import { segments } from "../../helper/constants";
 
-type Props = {
-    category_slug?: string;
-};
-
-const segments = [
-    {
-      name: 'All',
-      value: 'default'
-    },
-    {
-      name: 'New Arrival',
-      value: 'is_new_arrival'
-    },
-    {
-      name: 'Best Sale',
-      value: 'is_best_sale'
-    },
-    {
-      name: 'Featured',
-      value: 'is_featured'
-    },
-];
-
-const ProductSegment: React.FC<Props> = ({category_slug}) => {
+const ProductSegment: React.FC<CategorySlugProps> = ({category_slug}) => {
     const [segment, setSegment] = useState<string>('default')
     const [segmentUrl, setSegmentUrl] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(false)
-    const [page, setPage] = useState<number>(1)
-    const [products, setProducts] = useState<any[]>([]);
-    const [meta, setMeta] = useState<any>({
-        next: true,
-        prev: true,
+    const {page, setPage, prevHandler, nextHandler} = usePagination();
+    const [products, setProducts] = useState<ProductSegmentState[]|[]>([]);
+    const [meta, setMeta] = useState<Meta>({
+        next_disabled: true,
+        prev_disabled: true,
     });
 
     useEffect(() => {
@@ -47,7 +27,8 @@ const ProductSegment: React.FC<Props> = ({category_slug}) => {
       return () => {}
     }, [page, segmentUrl])
 
-    const fetchProducts = async ():Promise<void> => {
+    const fetchProducts = useCallback(
+      async () => {
         setLoading(true);
         try {
             let category_slug_link = api_routes.products+`?page=${page}`;
@@ -56,49 +37,38 @@ const ProductSegment: React.FC<Props> = ({category_slug}) => {
             }
             const response:AxiosResponse = await axiosPublic.get(category_slug_link+segmentUrl);
             setProducts([...response.data.data])
+            const metaResp = meta
             if(response.data.links.next){
-                setMeta({
-                    ...meta, next: false
-                })
+                metaResp.next_disabled = false
             }else{
-                setMeta({
-                    ...meta, next: true
-                })
+                metaResp.next_disabled = true
             }
             if(response.data.links.prev){
-                setMeta({
-                    ...meta, prev: false
-                })
+                metaResp.prev_disabled = false
             }else{
-                setMeta({
-                    ...meta, prev: true
-                })
+                metaResp.prev_disabled = true
             }
+            setMeta({
+                ...metaResp
+            })
         } catch (error) {
             console.log(error);
         }finally{
             setLoading(false);
         }
-    }
+      },
+      [page, segmentUrl],
+    )
 
-    const segmentChangeHandler = (data:any):void => {
+    const segmentChangeHandler = useCallback((data:any):void => {
         setSegment(data.detail.value)
+        setPage(1)
         if(data.detail.value==='default'){
             setSegmentUrl('')
             return;
         }
         setSegmentUrl(`&filter[${data.detail.value}]=true`)
-    }
-
-    const prevHandler = ():void => {
-        setPage(page-1)
-    }
-    
-    const nextHandler = ():void => {
-        setPage(page+1)
-    }
-
-    console.log('fired')
+    }, [segmentUrl])
     
     return (
         <>
@@ -113,8 +83,6 @@ const ProductSegment: React.FC<Props> = ({category_slug}) => {
                     </IonSegmentButton>)
                 }
             </IonSegment>
-
-            {/* {loading && <LoadingCard />} */}
             
             {loading ? <LoadingCard /> : products.length>0 ? <>
                 <IonGrid className="mt-1 p-0">
@@ -135,7 +103,7 @@ const ProductSegment: React.FC<Props> = ({category_slug}) => {
                     }
 
                     </IonRow>
-                    <Pagination prev={()=>prevHandler()} prev_disabled={meta.prev} next={()=>nextHandler()} next_disabled={meta.next} />
+                    <Pagination prev={()=>prevHandler()} prev_disabled={meta.prev_disabled} next={()=>nextHandler()} next_disabled={meta.next_disabled} />
                 </IonGrid>
             </> : <IonText color={'success'}>
                <p className="text-center mt-1">Oops! No products available.</p>

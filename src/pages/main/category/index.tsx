@@ -5,25 +5,9 @@ import MainFooter from '../../../components/MainFooter';
 import BackHeader from '../../../components/BackHeader';
 import ProductSegment from '../../../components/ProductSegment';
 import { RouteComponentProps } from "react-router";
-
-const segments = [
-  {
-    name: 'All',
-    value: 'default'
-  },
-  {
-    name: 'New Arrival',
-    value: 'new_arrival'
-  },
-  {
-    name: 'Best Sale',
-    value: 'best_sale'
-  },
-  {
-    name: 'Featured',
-    value: 'featured'
-  },
-];
+import { useCallback, useEffect, useState } from 'react';
+import { AxiosResponse } from 'axios';
+import LoadingDetail from '../../../components/LoadingDetail';
 
 interface CategoryProps extends RouteComponentProps<{
   slug: string;
@@ -32,36 +16,56 @@ interface CategoryProps extends RouteComponentProps<{
 
 
 const Category: React.FC<CategoryProps> = ({match}) => {
-    
+  
+  const [loading, setLoading] = useState<boolean>(false)
+  const [category, setCategory] = useState<any>({});
+
+  useEffect(() => {
+    fetchCategories();
+    return () => {}
+  }, [match.params.slug])
+
+  const fetchCategories = useCallback(
+    async () => {
+      setLoading(true);
+      try {
+          let category_link = api_routes.category+`/${match.params.slug}`;
+          const response:AxiosResponse = await axiosPublic.get(category_link);
+          
+          setCategory({...response.data.category})
+      } catch (error) {
+          console.log(error);
+      }finally{
+          setLoading(false);
+      }
+    },
+    [match.params.slug],
+  )
 
     return (
       <IonPage>
-        <BackHeader title='Category 1' link='/home' />
+        <BackHeader title={category.name} link='/home' />
         <IonContent
           fullscreen={false}
           forceOverscroll={false}
         >
-          <IonImg
-              src={'/images/banner2.jpg'}
-              alt="Sliders"
-              style={{width: '100%'}}
-          ></IonImg>
-          <div className='content-main pt-10'>
-              <h1>Category 1</h1>
-          </div>
+          {loading ? 
+            <LoadingDetail /> :
+            <>
+              <IonImg
+                  src={category.banner_image_link}
+                  alt="Sliders"
+                  style={{width: '100%'}}
+              ></IonImg>
+              <div className='content-main pt-10'>
+                  <h1>{category.name}</h1>
+              </div>
+            </>
+          }
           <div className='ion-padding pt-0'>
             <div className="content-main">
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sed tellus nec mauris auctor dignissim fermentum in
-                risus. Sed nec convallis sapien, id tincidunt enim. Mauris ornare eleifend nunc id mattis. Fusce augue diam,
-                sagittis nec posuere at, consectetur tempor lectus. Nulla at lectus eget mauris iaculis malesuada mollis sed neque.
-                Curabitur et risus tristique, malesuada mauris finibus, elementum massa. Proin lacinia mauris quis ligula blandit
-                ullamcorper. Donec ut posuere lorem. </p>
-                <p>In volutpat magna vitae tellus posuere pulvinar. Nam varius ligula justo, nec
-                placerat lacus pharetra ac. Aenean massa orci, tristique in nisl ut, aliquet consectetur libero. Etiam luctus
-                placerat vulputate. Aliquam ipsum massa, porttitor at mollis ut, pretium sit amet mi. In neque mauris, placerat et
-                neque vel, tempor interdum dolor. Suspendisse gravida malesuada tellus, vel dapibus nisl dignissim vel. Cras ut
-                nulla sit amet erat malesuada euismod vel a nulla.
+                {category.description}
               </p>
             </div>
 

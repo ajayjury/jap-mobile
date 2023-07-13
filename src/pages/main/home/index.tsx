@@ -3,13 +3,14 @@ import { isPlatform } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import MainHeader from '../../../components/MainHeader';
 import MainFooter from '../../../components/MainFooter';
 import CategoryCard from '../../../components/CategoryCard';
 import PaginationComponent from '../../../components/Pagination';
 import Slider from '../../../components/Slider';
 import ProductSegment from '../../../components/ProductSegment';
+import CategorySegment from '../../../components/CategorySegment';
 
 const images = [
   '/images/banner1.jpg',
@@ -66,13 +67,14 @@ const Home: React.FC = () => {
 
   const [showSubHeader, setShowSubHeader] = useState<boolean>(false);
 
-  function handleScroll(ev: CustomEvent<ScrollDetail>) {
+  const handleScroll = useCallback((ev: CustomEvent<ScrollDetail>) => {
     if(ev.detail.scrollTop>475){
       setShowSubHeader(true);
     }else{
       setShowSubHeader(false);
     }
-  }
+  }, [])
+  
 
     return (
       <IonPage>
@@ -102,30 +104,8 @@ const Home: React.FC = () => {
                 nulla sit amet erat malesuada euismod vel a nulla.
               </p>
             </div>
-            <div className="content-main">
-              <h2>Top Category</h2>
-            </div>
-            <IonGrid className="mt-1 p-0">
-                <IonRow className="ion-align-items-center ion-justify-content-between p-0">
-
-                  {
-                    categories.map((item, i) => <IonCol
-                    size="6"
-                    size-xl="3"
-                    size-lg="3"
-                    size-md="4"
-                    size-sm="6"
-                    size-xs="6" className='p-0' key={i}
-                  >
-                      <Link className="no-underline" to={`/category/${i}`}>
-                        <CategoryCard image={item.image} name={item.name} items={item.items} />
-                      </Link>
-                  </IonCol>)
-                  }
-
-                </IonRow>
-                <PaginationComponent prev={()=>alert('prev')} next={()=>alert('next')} />
-            </IonGrid>
+            
+            <CategorySegment />
 
             <ProductSegment />
 

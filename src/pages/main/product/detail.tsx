@@ -1,6 +1,6 @@
 import { IonPage, IonContent, IonImg, ScrollDetail, IonButton, IonCol, IonIcon, IonItemDivider, IonRow, IonText, IonInput, IonItem, IonAvatar, IonLabel, IonBadge, IonCard, IonList, IonSpinner, IonTextarea } from '@ionic/react';
 import { isPlatform } from '@ionic/react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
 import { useState } from 'react';
@@ -14,6 +14,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Input from '../../../components/Input';
 import { ErrorMessage } from '@hookform/error-message';
 import Slider from '../../../components/Slider';
+
+
+interface ProductProps extends RouteComponentProps<{
+    slug: string;
+}> {}
 
 const images = [
   '/images/product1.png',
@@ -46,12 +51,12 @@ const schema = yup
   })
   .required();
 
-const ProductDetail: React.FC = () => {
+const ProductDetail: React.FC<ProductProps> = ({match}) => {
 
   const [showSubHeader, setShowSubHeader] = useState<boolean>(false);
-  const [loading, setLoading] = useState(false);
-  const [responseMessage, setResponseMessage] = useState("");
-  const [isToastOpen, setIsToastOpen] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [responseMessage, setResponseMessage] = useState<string>("");
+  const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
 
   const {
     handleSubmit,

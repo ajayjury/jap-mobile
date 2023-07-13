@@ -1,6 +1,5 @@
 import { IonItemDivider, IonRow, IonCol, IonText, IonIcon } from "@ionic/react";
 import { starOutline } from "ionicons/icons";
-import MainHeader from "../MainHeader";
 
 const ReviewItem: React.FC = () => {
     return (
