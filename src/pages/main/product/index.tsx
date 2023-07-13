@@ -1,4 +1,4 @@
-import { IonGrid, IonRow, IonCol, IonPage, IonContent, IonLabel, IonHeader, IonToolbar, IonSearchbar, IonTitle, IonButton, IonIcon, IonList, IonItem, IonSelect, IonSelectOption, IonModal, IonButtons, IonAccordionGroup, IonAccordion, IonRange, IonCheckbox, SearchbarInputEventDetail, SelectChangeEventDetail, CheckboxChangeEventDetail, IonRadioGroup, IonRadio, RadioGroupChangeEventDetail } from '@ionic/react';
+import { IonGrid, IonRow, IonCol, IonPage, IonContent, IonLabel, IonHeader, IonToolbar, IonSearchbar, IonTitle, IonButton, IonIcon, IonList, IonItem, IonSelect, IonSelectOption, IonModal, IonButtons, IonAccordionGroup, IonAccordion, IonRange, IonCheckbox, SearchbarInputEventDetail, SelectChangeEventDetail, CheckboxChangeEventDetail, IonRadioGroup, IonRadio, RadioGroupChangeEventDetail, IonSpinner } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
@@ -19,6 +19,7 @@ import { segments } from '../../../helper/constants';
 const Product: React.FC = () => {
 
   const [loading, setLoading] = useState<boolean>(false)
+  const [categoryLoading, setCategoryLoading] = useState<boolean>(false)
   const [segment, setSegment] = useState<string>('default')
   const [star, setStar] = useState<string>('default')
   const [category, setCategory] = useState<string>('default')
@@ -60,12 +61,12 @@ const Product: React.FC = () => {
 
   const fetchCategories = useCallback(
     async () => {
-      setLoading(true);
+      setCategoryLoading(true);
       try {
-          let category_link = api_routes.categories+`?page=${page}`;
+          let category_link = api_routes.categories+`?page=${pageCategory}&total=1`;
           const response:AxiosResponse = await axiosPublic.get(category_link);
           setCategories([...categories,...response.data.data])
-          const metaResp = meta
+          const metaResp = metaCategory
           if(response.data.links.next){
               metaResp.next_disabled = false
           }else{
@@ -82,7 +83,7 @@ const Product: React.FC = () => {
       } catch (error) {
           console.log(error);
       }finally{
-          setLoading(false);
+          setCategoryLoading(false);
       }
     },
     [pageCategory],
@@ -227,6 +228,13 @@ const Product: React.FC = () => {
                         <IonRadio value={item.slug} labelPlacement="end">{item.name}</IonRadio>
                         <br/>
                       </div>)}
+                      <br/>
+                      {!metaCategory.next_disabled && categories.length>0 ? <div className='text-center'>
+                          <IonButton size="small" color='success' shape='round' fill={categoryLoading? 'clear' : 'outline'} className='pt-1 pb-1' onClick={()=>setPageCategory(pageCategory+1)}>
+                            {categoryLoading ? <IonSpinner name="crescent" color="success"></IonSpinner> : 'View More'}
+                          </IonButton> 
+                      </div>
+                      : null}
                     </IonRadioGroup>
                   </div>
                 </IonAccordion>
