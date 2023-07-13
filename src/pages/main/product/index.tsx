@@ -1,4 +1,4 @@
-import { IonGrid, IonRow, IonCol, IonPage, IonContent, IonLabel, IonHeader, IonToolbar, IonSearchbar, IonTitle, IonButton, IonIcon, IonList, IonItem, IonSelect, IonSelectOption, IonModal, IonButtons, IonAccordionGroup, IonAccordion, IonRange, IonCheckbox } from '@ionic/react';
+import { IonGrid, IonRow, IonCol, IonPage, IonContent, IonLabel, IonHeader, IonToolbar, IonSearchbar, IonTitle, IonButton, IonIcon, IonList, IonItem, IonSelect, IonSelectOption, IonModal, IonButtons, IonAccordionGroup, IonAccordion, IonRange, IonCheckbox, SearchbarInputEventDetail, SelectChangeEventDetail, CheckboxChangeEventDetail, IonRadioGroup, IonRadio, RadioGroupChangeEventDetail } from '@ionic/react';
 import { Link } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
@@ -10,57 +10,29 @@ import { filterOutline, starOutline } from 'ionicons/icons';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 import ProductGrid from '../../../components/ProductGrid';
 import { usePagination } from '../../../hooks/usePagination';
-import { Meta, ProductSegmentState } from '../../../helper/types';
+import { CategoryState, Meta, ProductSegmentState } from '../../../helper/types';
 import { AxiosResponse } from 'axios';
-
-const products = [
-  {
-    name: 'product 1',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-01.png',
-  },
-  {
-    name: 'product 2',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-02.png',
-  },
-  {
-    name: 'product 3',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-03.png',
-  },
-  {
-    name: 'product 4',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-04.png',
-  },
-  {
-    name: 'product 5',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-05.png',
-  },
-  {
-    name: 'product 6',
-    price: 'Rs. 200',
-    discounted_price: 'Rs. 150',
-    image: 'https://orgado-react.vercel.app/assets/img/trending/product/product-01.png',
-  },
-];
+import { segments } from '../../../helper/constants';
 
 
 
 const Product: React.FC = () => {
 
   const [loading, setLoading] = useState<boolean>(false)
+  const [segment, setSegment] = useState<string>('default')
+  const [star, setStar] = useState<string>('default')
+  const [category, setCategory] = useState<string>('default')
   const [search, setSearch] = useState<string|null|undefined>('')
+  const [sort, setSort] = useState<string|null|undefined>('-id')
   const {page, setPage, prevHandler, nextHandler} = usePagination();
   const [products, setProducts] = useState<ProductSegmentState[]|[]>([]);
   const [meta, setMeta] = useState<Meta>({
+      next_disabled: true,
+      prev_disabled: true,
+  });
+  const [categories, setCategories] = useState<CategoryState[]|[]>([]);
+  const [pageCategory, setPageCategory] = useState<number>(1)
+  const [metaCategory, setMetaCategory] = useState<Meta>({
       next_disabled: true,
       prev_disabled: true,
   });
@@ -82,21 +54,51 @@ const Product: React.FC = () => {
   }
 
   useEffect(() => {
+    fetchCategories();
+    return () => {}
+  }, [pageCategory])
+
+  const fetchCategories = useCallback(
+    async () => {
+      setLoading(true);
+      try {
+          let category_link = api_routes.categories+`?page=${page}`;
+          const response:AxiosResponse = await axiosPublic.get(category_link);
+          setCategories([...categories,...response.data.data])
+          const metaResp = meta
+          if(response.data.links.next){
+              metaResp.next_disabled = false
+          }else{
+              metaResp.next_disabled = true
+          }
+          if(response.data.links.prev){
+              metaResp.prev_disabled = false
+          }else{
+              metaResp.prev_disabled = true
+          }
+          setMetaCategory({
+              ...metaResp
+          })
+      } catch (error) {
+          console.log(error);
+      }finally{
+          setLoading(false);
+      }
+    },
+    [pageCategory],
+  )
+
+  useEffect(() => {
     fetchProducts();
     return () => {}
-  }, [page, search])
+  }, [page, search, sort, segment, star, category])
 
   const fetchProducts = useCallback(
     async () => {
       setLoading(true);
       try {
-          let category_slug_link = api_routes.products+`?page=${page}`;
-          if(search){
-            category_slug_link+=`&filter[search]=${search}`
-          }else{
-            category_slug_link+=``
-          }
-          const response:AxiosResponse = await axiosPublic.get(category_slug_link);
+          let products_link = api_routes.products+`?page=${page}&filter[search]=${search}&sort=-${sort}${segment=='default' ? '' : '&filter['+segment+']=true'}${star=='default' ? '' : '&filter[has_reviews]='+star}${category=='default' ? '' : '&filter[has_categories]='+category}`;
+          const response:AxiosResponse = await axiosPublic.get(products_link);
           setProducts([...response.data.data])
           const metaResp = meta
           if(response.data.links.next){
@@ -118,14 +120,24 @@ const Product: React.FC = () => {
           setLoading(false);
       }
     },
-    [page, search],
+    [page, search, sort, segment, star, category],
   )
+
+  const searchHandler = useCallback((ev: CustomEvent<SearchbarInputEventDetail>):void => setSearch(ev.detail.value), [search])
+  
+  const sortHandler = useCallback((ev: CustomEvent<SelectChangeEventDetail>):void => setSort(ev.detail.value), [sort])
+
+  const segmentHandler = useCallback((data:CustomEvent<RadioGroupChangeEventDetail>):void => setSegment(data.detail.value), [segment])
+  
+  const starHandler = useCallback((data:CustomEvent<RadioGroupChangeEventDetail>):void => setStar(data.detail.value), [star])
+  
+  const categoryHandler = useCallback((data:CustomEvent<RadioGroupChangeEventDetail>):void => setCategory(data.detail.value), [category])
 
     return (
       <IonPage>
         <IonHeader translucent={true} className='main-header-background'>
           <IonToolbar className='main-header-background'> 
-            <IonSearchbar showClearButton="focus" debounce={500} onIonInput={(ev) => setSearch(ev.detail.value)}></IonSearchbar>
+            <IonSearchbar showClearButton="focus" debounce={500} onIonInput={(ev) => searchHandler(ev)}></IonSearchbar>
           </IonToolbar>
         </IonHeader>
         <IonContent
@@ -147,10 +159,14 @@ const Product: React.FC = () => {
                           <IonButton size="small" color='success' shape='round' fill='outline'>
                             <IonList class='transparent-bg'>
                               <IonItem className='transparent-item-bg'>
-                                <IonSelect aria-label="fruit" interface="popover" placeholder="Sort">
-                                  <IonSelectOption value="apples">Apples</IonSelectOption>
-                                  <IonSelectOption value="oranges">Oranges</IonSelectOption>
-                                  <IonSelectOption value="bananas">Bananas</IonSelectOption>
+                                <IonSelect aria-label="sort" interface="popover" onIonChange={(ev)=>sortHandler(ev)} placeholder="Sort">
+                                  <IonSelectOption value="-id">Default</IonSelectOption>
+                                  <IonSelectOption value="name">Name: Asc</IonSelectOption>
+                                  <IonSelectOption value="-name">Name: Desc</IonSelectOption>
+                                  <IonSelectOption value="price">Price: Low To High</IonSelectOption>
+                                  <IonSelectOption value="-price">Price: High To Low</IonSelectOption>
+                                  <IonSelectOption value="discount">Discount: Low To High</IonSelectOption>
+                                  <IonSelectOption value="-discount">Discount: High To Low</IonSelectOption>
                                 </IonSelect>
                               </IonItem>
                             </IonList>
@@ -168,7 +184,7 @@ const Product: React.FC = () => {
             </IonGrid>
           </div>
 
-          <div className='ion-padding pt-0'>
+          <div className='ion-padding pt-0 min-height-40'>
 
             <ProductGrid loading={loading} products={products} prevHandler={prevHandler} nextHandler={nextHandler} meta={meta} />
 
@@ -191,39 +207,27 @@ const Product: React.FC = () => {
                     <IonLabel>Special Features</IonLabel>
                   </IonItem>
                   <div className="ion-padding" slot="content">
-                    <IonCheckbox className='mb-1' labelPlacement="end">New Arrival</IonCheckbox>
-                    <br/>
-                    <IonCheckbox className='mb-1' labelPlacement="end">Featured</IonCheckbox>
-                    <br/>
-                    <IonCheckbox className='mb-1' labelPlacement="end">Best Sale</IonCheckbox>
-                    <br/>
-                  </div>
-                </IonAccordion>
-                <IonAccordion value="second">
-                  <IonItem slot="header" color="light">
-                    <IonLabel>Price</IonLabel>
-                  </IonItem>
-                  <div className="ion-padding" slot="content">
-                  <IonRange
-                    aria-label="Dual Knobs Range"
-                    dualKnobs={true}
-                    value={{
-                      lower: 20,
-                      upper: 80,
-                    }}
-                  ></IonRange>
+                    <IonRadioGroup value={segment} onIonChange={(ev)=> segmentHandler(ev)}>
+                      {segments.map((item, i) => <div key={i}>
+                        <IonRadio value={item.value} labelPlacement="end">{item.name}</IonRadio>
+                        <br/>
+                      </div>)}
+                    </IonRadioGroup>
                   </div>
                 </IonAccordion>
                 <IonAccordion value="third">
                   <IonItem slot="header" color="light">
-                    <IonLabel>Categories</IonLabel>
+                    <IonLabel>Category</IonLabel>
                   </IonItem>
                   <div className="ion-padding" slot="content">
-                    <IonCheckbox className='mb-1' labelPlacement="end">Catgeory 1</IonCheckbox>
-                    <br/>
-                    <IonCheckbox className='mb-1' labelPlacement="end">Catgeory 2</IonCheckbox>
-                    <br/>
-                    <IonCheckbox className='mb-1' labelPlacement="end">Catgeory 3</IonCheckbox>
+                    <IonRadioGroup value={category} onIonChange={(ev)=> categoryHandler(ev)}>
+                      <IonRadio value={'default'} labelPlacement="end">All</IonRadio>
+                        <br/>
+                      {categories.map((item, i) => <div key={i}>
+                        <IonRadio value={item.slug} labelPlacement="end">{item.name}</IonRadio>
+                        <br/>
+                      </div>)}
+                    </IonRadioGroup>
                   </div>
                 </IonAccordion>
                 <IonAccordion value="fourth">
@@ -231,13 +235,20 @@ const Product: React.FC = () => {
                     <IonLabel>Reviews</IonLabel>
                   </IonItem>
                   <div className="ion-padding" slot="content">
-                    <IonCheckbox className='mb-1' labelPlacement="end"><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon> & above</IonCheckbox>
-                    <br/>
-                    <IonCheckbox className='mb-1' labelPlacement="end"><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon> & above</IonCheckbox>
-                    <br/>
-                    <IonCheckbox className='mb-1' labelPlacement="end"><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon> & above</IonCheckbox>
-                    <br/>
-                    <IonCheckbox className='mb-1' labelPlacement="end"><IonIcon icon={starOutline}></IonIcon> & above</IonCheckbox>
+                    <IonRadioGroup value={star} onIonChange={(ev)=>starHandler(ev)}>
+                        <IonRadio value='default' labelPlacement="end">All</IonRadio>
+                        <br/>
+                        <IonRadio value='1' labelPlacement="end">1 star</IonRadio>
+                        <br/>
+                        <IonRadio value='2' labelPlacement="end">2 stars</IonRadio>
+                        <br/>
+                        <IonRadio value='3' labelPlacement="end">3 stars</IonRadio>
+                        <br/>
+                        <IonRadio value='4' labelPlacement="end">4 stars</IonRadio>
+                        <br/>
+                        <IonRadio value='5' labelPlacement="end">5 stars</IonRadio>
+                        <br/>
+                    </IonRadioGroup>
                   </div>
                 </IonAccordion>
               </IonAccordionGroup>

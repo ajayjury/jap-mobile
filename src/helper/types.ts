@@ -14,6 +14,25 @@ export interface CategoryState<> {
     is_active: boolean;
 }
 
+export interface ProductReviewState<> {
+    created_at: string;
+    email: string;
+    id: number;
+    image_link?: string;
+    is_approved: boolean;
+    message?: string;
+    name?: string;
+    star: number;
+    updated_at: string;
+}
+export interface ProductOtherImagesState<> {
+    id: number;
+    image_link?: string;
+    created_at: string;
+    updated_at: string;
+    image_alt?: string;
+    image_title?: string;
+}
 export interface ProductSegmentState<> {
     id: number;
     name: string;
@@ -35,9 +54,9 @@ export interface ProductSegmentState<> {
     is_best_sale: boolean;
     is_featured: boolean;
     is_new_arrival: boolean
-    other_images: []
+    other_images: ProductOtherImagesState[]|[]
     price: number
-    reviews: [],
+    reviews: ProductReviewState[]|[],
     categories: []|CategoryState[]
 }
 
