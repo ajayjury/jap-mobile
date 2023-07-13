@@ -63,7 +63,7 @@ const Product: React.FC = () => {
     async () => {
       setCategoryLoading(true);
       try {
-          let category_link = api_routes.categories+`?page=${pageCategory}&total=1`;
+          let category_link = api_routes.categories+`?page=${pageCategory}`;
           const response:AxiosResponse = await axiosPublic.get(category_link);
           setCategories([...categories,...response.data.data])
           const metaResp = metaCategory
