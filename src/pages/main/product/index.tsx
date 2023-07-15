@@ -98,7 +98,7 @@ const Product: React.FC = () => {
     async () => {
       setLoading(true);
       try {
-          let products_link = api_routes.products+`?page=${page}&filter[search]=${search}&sort=-${sort}${segment=='default' ? '' : '&filter['+segment+']=true'}${star=='default' ? '' : '&filter[has_reviews]='+star}${category=='default' ? '' : '&filter[has_categories]='+category}`;
+          let products_link = api_routes.products+`?page=${page}&sort=${sort}${segment=='default' ? '' : '&filter['+segment+']=true'}${star=='default' ? '' : '&filter[has_reviews]='+star}${category=='default' ? '' : '&filter[has_categories]='+category}&filter[search]=${search}`;
           const response:AxiosResponse = await axiosPublic.get(products_link);
           setProducts([...response.data.data])
           const metaResp = meta
@@ -164,10 +164,9 @@ const Product: React.FC = () => {
                                   <IonSelectOption value="-id">Default</IonSelectOption>
                                   <IonSelectOption value="name">Name: Asc</IonSelectOption>
                                   <IonSelectOption value="-name">Name: Desc</IonSelectOption>
-                                  <IonSelectOption value="price">Price: Low To High</IonSelectOption>
-                                  <IonSelectOption value="-price">Price: High To Low</IonSelectOption>
-                                  <IonSelectOption value="discount">Discount: Low To High</IonSelectOption>
-                                  <IonSelectOption value="-discount">Discount: High To Low</IonSelectOption>
+                                  {/* <IonSelectOption value="price">Price: Low To High</IonSelectOption>
+                                  <IonSelectOption value="-price">Price: High To Low</IonSelectOption> */}
+                                  <IonSelectOption value="-discount">Discount</IonSelectOption>
                                 </IonSelect>
                               </IonItem>
                             </IonList>

@@ -68,3 +68,7 @@ export interface Meta<> {
 export interface CategorySlugProps<> {
     category_slug?: string;
 };
+
+export interface BannerImages<> {
+    images: string[]|[]
+}

@@ -1,7 +1,8 @@
 import { IonItemDivider, IonRow, IonCol, IonText, IonIcon } from "@ionic/react";
 import { starOutline } from "ionicons/icons";
+import { ProductReviewState } from "../../helper/types";
 
-const ReviewItem: React.FC = () => {
+const ReviewItem: React.FC<ProductReviewState> = ({name, star, message, image_link}) => {
     return (
         <IonItemDivider className="review-divider-total">
             <div className="ion-padding w-100 pt-0 pb-0">
@@ -10,14 +11,14 @@ const ReviewItem: React.FC = () => {
                         size="2"
                         className='text-left'
                     >
-                        <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+                        <img alt="Silhouette of a person's head" src={image_link} />
                     </IonCol>
                     <IonCol
                         size="10"
                         className='text-left'
                     >
                         <IonText color="success" className="text-left mb-0 pb-0">
-                            <h6 className="text-left mb-0 pb-0 mt-0 pt-0">John Doe</h6>
+                            <h6 className="text-left mb-0 pb-0 mt-0 pt-0">{name}</h6>
                         </IonText>
                         <IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon><IonIcon icon={starOutline}></IonIcon>
                     </IonCol>
@@ -25,7 +26,7 @@ const ReviewItem: React.FC = () => {
                         size="12"
                         className='text-left'
                     >
-                        <p className="font-normal mt-0 pt-0 mb-0 pb-0">Premium designed icons for use in web, iOS, Android, and desktop apps. Support for SVG and web font. Completely open source, MIT licensed and built by Ionic.</p>
+                        <p className="font-normal mt-0 pt-0 mb-0 pb-0">{message}</p>
                     </IonCol>
                 </IonRow>
             </div>

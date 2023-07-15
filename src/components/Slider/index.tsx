@@ -1,12 +1,9 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Keyboard, Pagination, Scrollbar, Zoom } from 'swiper/modules';
 import { IonImg } from '@ionic/react';
+import { BannerImages } from '../../helper/types';
 
-type Images = {
-    images: string[]|[]
-}
-
-const Slider: React.FC<Images> = ({images}) => {
+const Slider: React.FC<BannerImages> = ({images}) => {
     return (
         <Swiper 
             modules={[Autoplay, Keyboard, Pagination, Scrollbar, Zoom]}

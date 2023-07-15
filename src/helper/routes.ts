@@ -3,6 +3,7 @@ type api_routes = {
     register: string,
     forgot_password: string,
     products: string,
+    product: string,
     categories: string,
     category: string,
 }
@@ -11,6 +12,7 @@ export const api_routes: api_routes = {
     register: '/api/v1/auth/register',
     forgot_password: '/api/v1/auth/forgot-password',
     products: '/api/v1/product/main/paginate',
+    product: '/api/v1/product/main/detail',
     categories: '/api/v1/category/main/paginate',
     category: '/api/v1/category/main/detail',
 }
