@@ -27,12 +27,13 @@ import * as yup from "yup";
 import Input from "../../../components/Input";
 import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import EmptyCart from "../../../components/EmptyCart";
 import { chevronForwardOutline } from "ionicons/icons";
 import CartItem from "../../../components/CartItem";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import { ErrorMessage } from "@hookform/error-message";
+import { AuthContext } from "../../../context/AuthProvider";
 
 const fields = [
     {
@@ -115,6 +116,8 @@ const Cart: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [responseMessage, setResponseMessage] = useState("");
     const [isToastOpen, setIsToastOpen] = useState(false);
+
+    const {auth} = useContext(AuthContext);
 
     const modal = useRef<HTMLIonModalElement>(null);
 
@@ -236,199 +239,201 @@ const Cart: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen={false} forceOverscroll={true}>
-                {/* <EmptyCart type="cart" /> */}
-
-                <IonCard className=" mt-2 mb-2">
-                    <div className='ion-padding pt-0 pb-2'>
-                        <div className="content-main mt-1">
-                            <h6>Cart Items</h6>
-                        </div>
-                    </div>
-                    <CartItem type="cart" />
-                    <CartItem type="cart" />
-                </IonCard>
-
-                <IonCard className="final-table mt-2 mb-2">
-                    <div className='ion-padding pt-0 pb-0'>
-                        <div className="content-main mt-1">
-                            <h6>Coupon Code</h6>
-                        </div>
-                    </div>
-                    <div className='ion-padding'>
-                        <IonRow className="ion-align-items-center ion-justify-content-between p-0 w-100">
-                            <IonCol
-                                size="9"
-                                className='text-left'
-                            >
-                                <IonItem>
-                                    <IonInput
-                                    className="coupon-code-input-holder"
-                                    clearInput={true}
-                                    placeholder="Enter Coupon Code"
-                                    ></IonInput>
-                                </IonItem>
-                            </IonCol>
-                            <IonCol
-                                size="3"
-                                className='text-right'
-                            >
-                                <IonButton className="m-0" size="small" fill='outline' color="success">
-                                    Apply
-                                </IonButton>
-                            </IonCol>
-                        </IonRow>
-                    </div>
-                    
-                </IonCard>
+                {auth.authenticated ? <>
                 
-                <IonCard className="final-table mt-2 mb-2">
-                    <div className='ion-padding pt-0 pb-2'>
-                        <div className="content-main mt-1">
-                            <h6>Pricing Information</h6>
-                        </div>
-                    </div>
-                    <table className="w-100 border-final-1">
-                        <thead className="w-100">
-                            <tr className="border-bottom-1 w-100">
-                                <td className="text-left tr-price">Total Items:</td>
-                                <td className="text-right tr-price">3</td>
-                            </tr>
-                            <tr className="border-bottom-1 w-100">
-                                <td className="text-left tr-price">Sub Total:</td>
-                                <td className="text-right tr-price">Rs. 16020</td>
-                            </tr>
-                            <tr className="border-bottom-1 w-100">
-                                <td className="text-left tr-price">Total Discount:</td>
-                                <td className="text-right tr-price">Rs. 100</td>
-                            </tr>
-                            <tr className="border-bottom-1 w-100">
-                                <td className="text-left tr-price">GST:</td>
-                                <td className="text-right tr-price">Rs. 100</td>
-                            </tr>
-                            <tr className="border-bottom-1 w-100">
-                                <td className="text-left tr-price">Delivery Charge:</td>
-                                <td className="text-right tr-price">Rs. 100</td>
-                            </tr>
-                            <tr className="border-bottom-1 w-100">
-                                <td className="text-left tr-price font-bold">Cumulative Total:</td>
-                                <td className="text-right tr-price font-bold">Rs. 16020</td>
-                            </tr>
-                            <tr className="border-bottom-1 w-100">
-                                <td className="text-left tr-price">Coupon Discount:</td>
-                                <td className="text-right tr-price">Rs. 100</td>
-                            </tr>
-                            <tr className="border-bottom-1 w-100 total-bg-table-tr">
-                                <td className="text-left tr-price font-bold">Total:</td>
-                                <td className="text-right tr-price font-bold">Rs. 16020</td>
-                            </tr>
-                        </thead>
-                    </table>
-                </IonCard>
+                  <IonCard className=" mt-2 mb-2">
+                      <div className='ion-padding pt-0 pb-2'>
+                          <div className="content-main mt-1">
+                              <h6>Cart Items</h6>
+                          </div>
+                      </div>
+                      <CartItem type="cart" />
+                      <CartItem type="cart" />
+                  </IonCard>
 
-                <IonItemDivider className="cart-divider-total" slot="fixed">
-                    <IonRow className="ion-align-items-center ion-justify-content-between p-0 w-100">
-                        <IonCol
-                            size="6"
-                            className='text-left'
-                        >
-                            <IonText className="text-left mb-0 pb-0">
-                                <h4 className="text-left mb-0 pb-0 mt-0 pt-0">Rs. 16020</h4>
-                            </IonText>
-                        </IonCol>
-                        <IonCol
-                            size="6"
-                            className='text-right'
-                        >
-                            <IonButton id="checkout-modal" className="pagination-btn m-0" fill='solid' color="success">
-                                Checkout
-                                <IonIcon slot="end" icon={chevronForwardOutline}></IonIcon>
-                            </IonButton>
-                        </IonCol>
-                    </IonRow>
-                </IonItemDivider>
+                  <IonCard className="final-table mt-2 mb-2">
+                      <div className='ion-padding pt-0 pb-0'>
+                          <div className="content-main mt-1">
+                              <h6>Coupon Code</h6>
+                          </div>
+                      </div>
+                      <div className='ion-padding'>
+                          <IonRow className="ion-align-items-center ion-justify-content-between p-0 w-100">
+                              <IonCol
+                                  size="9"
+                                  className='text-left'
+                              >
+                                  <IonItem>
+                                      <IonInput
+                                      className="coupon-code-input-holder"
+                                      clearInput={true}
+                                      placeholder="Enter Coupon Code"
+                                      ></IonInput>
+                                  </IonItem>
+                              </IonCol>
+                              <IonCol
+                                  size="3"
+                                  className='text-right'
+                              >
+                                  <IonButton className="m-0" size="small" fill='outline' color="success">
+                                      Apply
+                                  </IonButton>
+                              </IonCol>
+                          </IonRow>
+                      </div>
+                      
+                  </IonCard>
+                  
+                  <IonCard className="final-table mt-2 mb-2">
+                      <div className='ion-padding pt-0 pb-2'>
+                          <div className="content-main mt-1">
+                              <h6>Pricing Information</h6>
+                          </div>
+                      </div>
+                      <table className="w-100 border-final-1">
+                          <thead className="w-100">
+                              <tr className="border-bottom-1 w-100">
+                                  <td className="text-left tr-price">Total Items:</td>
+                                  <td className="text-right tr-price">3</td>
+                              </tr>
+                              <tr className="border-bottom-1 w-100">
+                                  <td className="text-left tr-price">Sub Total:</td>
+                                  <td className="text-right tr-price">Rs. 16020</td>
+                              </tr>
+                              <tr className="border-bottom-1 w-100">
+                                  <td className="text-left tr-price">Total Discount:</td>
+                                  <td className="text-right tr-price">Rs. 100</td>
+                              </tr>
+                              <tr className="border-bottom-1 w-100">
+                                  <td className="text-left tr-price">GST:</td>
+                                  <td className="text-right tr-price">Rs. 100</td>
+                              </tr>
+                              <tr className="border-bottom-1 w-100">
+                                  <td className="text-left tr-price">Delivery Charge:</td>
+                                  <td className="text-right tr-price">Rs. 100</td>
+                              </tr>
+                              <tr className="border-bottom-1 w-100">
+                                  <td className="text-left tr-price font-bold">Cumulative Total:</td>
+                                  <td className="text-right tr-price font-bold">Rs. 16020</td>
+                              </tr>
+                              <tr className="border-bottom-1 w-100">
+                                  <td className="text-left tr-price">Coupon Discount:</td>
+                                  <td className="text-right tr-price">Rs. 100</td>
+                              </tr>
+                              <tr className="border-bottom-1 w-100 total-bg-table-tr">
+                                  <td className="text-left tr-price font-bold">Total:</td>
+                                  <td className="text-right tr-price font-bold">Rs. 16020</td>
+                              </tr>
+                          </thead>
+                      </table>
+                  </IonCard>
 
-                <div className="ion-padding">
-                    <IonToast
-                        isOpen={isToastOpen}
-                        message={responseMessage}
-                        onDidDismiss={() => setIsToastOpen(false)}
-                        duration={5000}
-                        buttons={[
-                        {
-                            text: "Close",
-                            handler: () => {
-                            setIsToastOpen(false);
-                            },
-                        },
-                        ]}
-                        layout="stacked"
-                    ></IonToast>
-                </div>
+                  <IonItemDivider className="cart-divider-total" slot="fixed">
+                      <IonRow className="ion-align-items-center ion-justify-content-between p-0 w-100">
+                          <IonCol
+                              size="6"
+                              className='text-left'
+                          >
+                              <IonText className="text-left mb-0 pb-0">
+                                  <h4 className="text-left mb-0 pb-0 mt-0 pt-0">Rs. 16020</h4>
+                              </IonText>
+                          </IonCol>
+                          <IonCol
+                              size="6"
+                              className='text-right'
+                          >
+                              <IonButton id="checkout-modal" className="pagination-btn m-0" fill='solid' color="success">
+                                  Checkout
+                                  <IonIcon slot="end" icon={chevronForwardOutline}></IonIcon>
+                              </IonButton>
+                          </IonCol>
+                      </IonRow>
+                  </IonItemDivider>
 
-                <IonModal ref={modal} trigger="checkout-modal" onWillDismiss={(ev) => onWillDismiss(ev)}>
-                    <IonHeader>
-                        <IonToolbar>
-                            <IonTitle>Checkout</IonTitle>
-                            <IonButtons slot="end">
-                                <IonButton size="small" color='success' shape='round' fill='outline' strong={true} onClick={() => modal.current?.dismiss('confirm')}>
-                                    Cancel
-                                </IonButton>
-                            </IonButtons>
-                        </IonToolbar>
-                    </IonHeader>
-                    <IonContent>
-                    <div className='ion-padding mb-1'>
-                        <div className="content-main mt-1">
-                            <h6>Billing Information</h6>
-                        </div>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <IonList className="ion-no-padding">
-                            {fields.map((item, i) => (
-                                <Input
-                                {...item}
-                                register={register}
-                                errors={errors}
-                                key={i}
-                                />
-                            ))}
-                            </IonList>
-                            <IonList className="ion-no-padding">
-                                <>
-                                    <IonItem className="ion-no-padding auth-card-background">
-                                        <IonTextarea 
-                                            className="ion-no-padding" 
-                                            labelPlacement="floating" 
-                                            placeholder='Enter address'
-                                            label='Message'
-                                            inputmode="text"
-                                            {...register('billing_address_1')}
-                                        >
-                                        </IonTextarea>
-                                    </IonItem>
-                                    <ErrorMessage
-                                        errors={errors}
-                                        name='billing_address_1'
-                                        as={<div style={{ color: 'red' }} />}
-                                    />
-                                </>
-                            </IonList>
-                            <IonButton
-                                color="success"
-                                type="submit"
-                                expand="block"
-                                shape="round"
-                                className="mt-2"
-                            >
-                            {loading ? (
-                                <IonSpinner name="crescent"></IonSpinner>
-                            ) : (
-                                "Place Order"
-                            )}
-                            </IonButton>
-                        </form>
-                    </div>
-                    </IonContent>
-                </IonModal>
+                  <div className="ion-padding">
+                      <IonToast
+                          isOpen={isToastOpen}
+                          message={responseMessage}
+                          onDidDismiss={() => setIsToastOpen(false)}
+                          duration={5000}
+                          buttons={[
+                          {
+                              text: "Close",
+                              handler: () => {
+                              setIsToastOpen(false);
+                              },
+                          },
+                          ]}
+                          layout="stacked"
+                      ></IonToast>
+                  </div>
+
+                  <IonModal ref={modal} trigger="checkout-modal" onWillDismiss={(ev) => onWillDismiss(ev)}>
+                      <IonHeader>
+                          <IonToolbar>
+                              <IonTitle>Checkout</IonTitle>
+                              <IonButtons slot="end">
+                                  <IonButton size="small" color='success' shape='round' fill='outline' strong={true} onClick={() => modal.current?.dismiss('confirm')}>
+                                      Cancel
+                                  </IonButton>
+                              </IonButtons>
+                          </IonToolbar>
+                      </IonHeader>
+                      <IonContent>
+                      <div className='ion-padding mb-1'>
+                          <div className="content-main mt-1">
+                              <h6>Billing Information</h6>
+                          </div>
+                          <form onSubmit={handleSubmit(onSubmit)}>
+                              <IonList className="ion-no-padding">
+                              {fields.map((item, i) => (
+                                  <Input
+                                  {...item}
+                                  register={register}
+                                  errors={errors}
+                                  key={i}
+                                  />
+                              ))}
+                              </IonList>
+                              <IonList className="ion-no-padding">
+                                  <>
+                                      <IonItem className="ion-no-padding auth-card-background">
+                                          <IonTextarea 
+                                              className="ion-no-padding" 
+                                              labelPlacement="floating" 
+                                              placeholder='Enter address'
+                                              label='Message'
+                                              inputmode="text"
+                                              {...register('billing_address_1')}
+                                          >
+                                          </IonTextarea>
+                                      </IonItem>
+                                      <ErrorMessage
+                                          errors={errors}
+                                          name='billing_address_1'
+                                          as={<div style={{ color: 'red' }} />}
+                                      />
+                                  </>
+                              </IonList>
+                              <IonButton
+                                  color="success"
+                                  type="submit"
+                                  expand="block"
+                                  shape="round"
+                                  className="mt-2"
+                              >
+                              {loading ? (
+                                  <IonSpinner name="crescent"></IonSpinner>
+                              ) : (
+                                  "Place Order"
+                              )}
+                              </IonButton>
+                          </form>
+                      </div>
+                      </IonContent>
+                  </IonModal>
+
+                </> : <EmptyCart type="cart" />}
 
             </IonContent>
         </IonPage>
