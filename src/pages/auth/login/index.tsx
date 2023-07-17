@@ -17,8 +17,9 @@ import * as yup from "yup";
 import Input from "../../../components/Input";
 import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Auth from "../../../layout/Auth";
+import { AuthContext } from "../../../context/AuthProvider";
 
 const schema = yup
   .object({
@@ -31,6 +32,7 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [isToastOpen, setIsToastOpen] = useState(false);
+  const {setAuth} = useContext(AuthContext);
 
   const {
     handleSubmit,
@@ -72,6 +74,12 @@ const Login: React.FC = () => {
         email: "",
         password: "",
       });
+      setAuth({auth:{
+        authenticated: true,
+        token: response.data.token,
+        token_type: response.data.token_type,
+        user: response.data.user
+      }})
     } catch (error: any) {
       console.log(error);
       if (error?.response?.data?.message) {
@@ -94,6 +102,7 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <Auth>

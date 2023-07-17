@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 
 export interface CategoryState<> {
     id: number;
@@ -71,4 +72,32 @@ export interface CategorySlugProps<> {
 
 export interface BannerImages<> {
     images: string[]|[]
+}
+
+export interface ChildrenType<> {
+    children: ReactNode
+}
+
+export interface RoleType<> {
+    id: number;
+    name: string;
+    permissions: string[];
+    created_at: string;
+    updated_at: string;
+}
+
+export interface UserType<> {
+    id: number;
+    email: string;
+    name: string;
+    phone: string;
+    verified: string;
+    roles: RoleType[];
+}
+
+export interface AuthType<> {
+    authenticated: boolean;
+    token: string;
+    token_type: string;
+    user?: UserType;
 }
