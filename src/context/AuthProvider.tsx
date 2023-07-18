@@ -1,6 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
 import { AuthType, ChildrenType } from "../helper/types";
 import { GetResult, Preferences } from '@capacitor/preferences';
+import { axiosPublic } from "../../axios";
+import { api_routes } from "../helper/routes";
 
 
 export type AType = {
@@ -61,14 +63,46 @@ const AuthProvider: React.FC<ChildrenType> = ({children}) => {
         return;
       }
     
-      const auth:AType = JSON.parse(ret.value);
-      const data = {auth:{
-        authenticated: auth.auth.authenticated,
-        token: auth.auth.token,
-        token_type: auth.auth.token_type,
-        user: auth.auth.user
-      }};
-      setAuth({...data})
+      const auth:AType = await JSON.parse(ret.value);
+      if(!auth.auth.authenticated){
+        const data = {auth:{
+          authenticated: false,
+          token: '',
+          token_type: '',
+          user: undefined
+        }};
+        setAuth({...data})
+        return;
+      }
+      const response = await getUserDetails(auth.auth.token)
+      if(response){
+        const data = {auth:{
+          authenticated: auth.auth.authenticated,
+          token: auth.auth.token,
+          token_type: auth.auth.token_type,
+          user: auth.auth.user
+        }};
+        setAuth({...data})
+      }else{
+        const data = {auth:{
+          authenticated: false,
+          token: '',
+          token_type: '',
+          user: undefined
+        }};
+        setAuth({...data})
+      }
+    }
+
+    const getUserDetails = async (token: string):Promise<boolean>=>{
+      try {
+        await axiosPublic.get(api_routes.profile, {
+          headers: {"Authorization" : `Bearer ${token}`}
+        });
+        return true;
+      } catch (error) {
+        return false;
+      }
     }
     
 

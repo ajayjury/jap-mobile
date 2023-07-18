@@ -16,6 +16,7 @@ import EmptyCart from "../../../components/EmptyCart";
 import CartItem from "../../../components/CartItem";
 import BackHeader from "../../../components/BackHeader";
 import { AuthContext } from "../../../context/AuthProvider";
+import { WishlistContext } from "../../../context/WishlistProvider";
 
 const Wishlist: React.FC = () => {
     const [loading, setLoading] = useState(false);
@@ -23,6 +24,10 @@ const Wishlist: React.FC = () => {
     const [isToastOpen, setIsToastOpen] = useState(false);
 
     const {auth} = useContext(AuthContext);
+    const {wishlist} = useContext(WishlistContext);
+
+    console.log(wishlist);
+    
 
 
     return (

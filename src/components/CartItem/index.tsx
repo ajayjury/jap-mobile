@@ -26,7 +26,7 @@ const CartItem: React.FC<Props> = ({type}) => {
                     </IonCol>
                 </IonRow>
             </IonItemDivider>
-            <div className="ion-padding">
+            <div className="ion-padding p-inline-5">
                 <IonRow className="ion-align-items-center p-0 mt- w-100">
                     <IonCol
                         size="3"

@@ -12,18 +12,5 @@ export const axiosPublic:AxiosInstance = axios.create({
             Accept: 'application/json'
         }
     },
-    withCredentials: true,
-})
-
-export const axiosPrivate:AxiosInstance = axios.create({
-    baseURL: ENV.API_ENDPOINT,
-    headers: {
-        post: {
-            Accept: 'application/json'
-        },
-        get: {
-            Accept: 'application/json'
-        }
-    },
-    withCredentials: true,
+    withCredentials: false,
 })

@@ -380,3 +380,16 @@ code{
 .min-height-40{
     min-height: 35vh;
 }
+
+.info-icon-green{
+    color: #699c47;
+    margin-right: 5px;
+}
+
+.text-success{
+    color: #699c47;
+}
+
+.p-inline-5{
+    padding-inline: 5px;
+}

@@ -5,7 +5,7 @@ import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
 import { useCallback, useEffect, useState } from 'react';
 import MainFooter from '../../../components/MainFooter';
-import { bookmarkOutline } from 'ionicons/icons';
+import { bookmarkOutline, informationCircleOutline } from 'ionicons/icons';
 import BackHeader from '../../../components/BackHeader';
 import ReviewItem from '../../../components/ReviewItem';
 import * as yup from "yup";
@@ -18,6 +18,7 @@ import { BannerImages, ProductSegmentState } from '../../../helper/types';
 import { AxiosResponse } from 'axios';
 import LoadingDetail from '../../../components/LoadingDetail';
 import LoadingPricingTable from '../../../components/LoadingPricingTable';
+import CartQuantity from '../../../components/CartQuantity';
 
 
 interface ProductProps extends RouteComponentProps<{
@@ -55,12 +56,20 @@ const schema = yup
   })
   .required();
 
+const pincodeSchema = yup
+  .object({
+    pincode: yup.string().required(),
+  })
+  .required();
+
 const ProductDetail: React.FC<ProductProps> = ({match}) => {
 
   const [showSubHeader, setShowSubHeader] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingPincode, setLoadingPincode] = useState<boolean>(false);
   const [productLoading, setProductLoading] = useState<boolean>(false);
   const [responseMessage, setResponseMessage] = useState<string>("");
+  const [pincodeResponseMessage, setPincodeResponseMessage] = useState<string>("");
   const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
   const [product, setProduct] = useState<ProductSegmentState>({
     id: 0,
@@ -127,6 +136,10 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
     resolver: yupResolver(schema),
   });
 
+  const pincodeForm = useForm({
+    resolver: yupResolver(pincodeSchema),
+  });
+
   function handleScroll(ev: CustomEvent<ScrollDetail>) {
     if(ev.detail.scrollTop>300){
       setShowSubHeader(true);
@@ -172,6 +185,33 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+  
+  const onPincodeSubmitHandler = async (data: any) => {
+    setLoadingPincode(true);
+    setPincodeResponseMessage("");
+    try {
+      const response = await axiosPublic.post(api_routes.pincode+`/${match.params.slug}`, data);
+      setPincodeResponseMessage(data.pincode);
+      setIsToastOpen(true);
+      pincodeForm.reset({
+        pincode: "",
+      });
+    } catch (error: any) {
+      console.log(error);
+      if (error?.response?.data?.message) {
+        setResponseMessage(error?.response?.data?.message);
+        setIsToastOpen(true);
+      }
+      if (error?.response?.data?.errors?.pincode) {
+        pincodeForm.setError("pincode", {
+          type: "server",
+          message: error?.response?.data?.errors?.pincode[0],
+        });
+      }
+    } finally {
+      setLoadingPincode(false);
     }
   };
 
@@ -291,28 +331,48 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                         </div>
                     </div>
                     <div className='ion-padding'>
-                        <IonRow className="ion-align-items-center ion-justify-content-between p-0 w-100">
-                            <IonCol
-                                size="9"
-                                className='text-left'
-                            >
-                                <IonItem>
-                                    <IonInput
-                                    className="coupon-code-input-holder"
-                                    clearInput={true}
-                                    placeholder="Enter Pincode"
-                                    ></IonInput>
-                                </IonItem>
-                            </IonCol>
-                            <IonCol
-                                size="3"
-                                className='text-right'
-                            >
-                                <IonButton className="m-0" size="small" fill='outline' color="success">
-                                    Check
-                                </IonButton>
-                            </IonCol>
-                        </IonRow>
+                        <form onSubmit={pincodeForm.handleSubmit(onPincodeSubmitHandler)}>    
+                            <IonRow className="ion-align-items-center ion-justify-content-between p-0 w-100">
+                                <IonCol
+                                    size="9"
+                                    className='text-left'
+                                >
+                                    <IonItem>
+                                        <IonInput
+                                        className="coupon-code-input-holder"
+                                        clearInput={true}
+                                        type="text"
+                                        inputmode="text"
+                                        placeholder="Enter Pincode"
+                                        {...pincodeForm.register('pincode')}
+                                        ></IonInput>
+                                    </IonItem>
+                                    <ErrorMessage
+                                        errors={pincodeForm.formState.errors}
+                                        name={'pincode'}
+                                        as={<div style={{ color: 'red' }} />}
+                                    />
+                                </IonCol>
+                                <IonCol
+                                    size="3"
+                                    className='text-right'
+                                >
+                                    <IonButton className="m-0" type='submit' size="small" fill='outline' color="success">
+                                    {loadingPincode ? (
+                                        <IonSpinner name="crescent" color={'success'}></IonSpinner>
+                                    ) : (
+                                        "CHECK"
+                                    )}
+                                    </IonButton>
+                                </IonCol>
+                                {pincodeResponseMessage.length>0 && <IonCol
+                                    size="12"
+                                    className='text-center'
+                                >
+                                    <p className='text-success mb-0 d-flex ion-align-items-center ion-justify-content-center'><IonIcon slot="start" className='info-icon-green' icon={informationCircleOutline}></IonIcon> Product available for pincode : <b>{pincodeResponseMessage}</b></p>
+                                </IonCol>}
+                            </IonRow>
+                        </form>
                     </div>
                     
                 </IonCard>
@@ -394,51 +454,51 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                             </div>
                         </div>
                         <div className='ion-padding mb-1'>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <IonList className="ion-no-padding">
-                            {fields.map((item, i) => (
-                                <Input
-                                {...item}
-                                register={register}
-                                errors={errors}
-                                key={i}
-                                />
-                            ))}
-                            </IonList>
-                            <IonList className="ion-no-padding">
-                                <>
-                                    <IonItem className="ion-no-padding auth-card-background">
-                                        <IonTextarea 
-                                            className="ion-no-padding" 
-                                            labelPlacement="floating" 
-                                            placeholder='Enter message'
-                                            label='Message'
-                                            inputmode="text"
-                                            {...register('message')}
-                                        >
-                                        </IonTextarea>
-                                    </IonItem>
-                                    <ErrorMessage
-                                        errors={errors}
-                                        name='message'
-                                        as={<div style={{ color: 'red' }} />}
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <IonList className="ion-no-padding">
+                                {fields.map((item, i) => (
+                                    <Input
+                                    {...item}
+                                    register={register}
+                                    errors={errors}
+                                    key={i}
                                     />
-                                </>
-                            </IonList>
-                            <IonButton
-                                color="success"
-                                type="submit"
-                                expand="block"
-                                shape="round"
-                                className="mt-2"
-                            >
-                            {loading ? (
-                                <IonSpinner name="crescent"></IonSpinner>
-                            ) : (
-                                "Submit"
-                            )}
-                            </IonButton>
-                        </form>
+                                ))}
+                                </IonList>
+                                <IonList className="ion-no-padding">
+                                    <>
+                                        <IonItem className="ion-no-padding auth-card-background">
+                                            <IonTextarea 
+                                                className="ion-no-padding" 
+                                                labelPlacement="floating" 
+                                                placeholder='Enter message'
+                                                label='Message'
+                                                inputmode="text"
+                                                {...register('message')}
+                                            >
+                                            </IonTextarea>
+                                        </IonItem>
+                                        <ErrorMessage
+                                            errors={errors}
+                                            name='message'
+                                            as={<div style={{ color: 'red' }} />}
+                                        />
+                                    </>
+                                </IonList>
+                                <IonButton
+                                    color="success"
+                                    type="submit"
+                                    expand="block"
+                                    shape="round"
+                                    className="mt-2"
+                                >
+                                {loading ? (
+                                    <IonSpinner name="crescent" color={'success'}></IonSpinner>
+                                ) : (
+                                    "Submit"
+                                )}
+                                </IonButton>
+                            </form>
                         </div>
                         
                     </IonCard>
@@ -451,21 +511,7 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                                 size="6"
                                 className='text-left'
                             >
-                                <div className="quantity-holder">
-                                    <div className="col-auto">
-                                        <IonButton color={'success'} size="small" className="m-0 h-100 p-0">
-                                            -
-                                        </IonButton>
-                                    </div>
-                                    <div className="col-3">
-                                        <IonInput type="number" inputmode="numeric" aria-label="Quantity" value="1" className="text-center quantity-text-holder"></IonInput>
-                                    </div>
-                                    <div className="col-auto">
-                                        <IonButton color={'success'} size="small" className="m-0 h-100 p-0">
-                                            +
-                                        </IonButton>
-                                    </div>
-                                </div>
+                                <CartQuantity max_quantity={product.inventory} />
                             </IonCol>
                             <IonCol
                                 size="6"

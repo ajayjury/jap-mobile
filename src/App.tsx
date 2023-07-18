@@ -32,12 +32,15 @@ import './theme/global.css';
 
 import AuthProvider from './context/AuthProvider';
 import PageTabs from './components/PageTabs';
+import WishlistProvider from './context/WishlistProvider';
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <AuthProvider>
-    <PageTabs />
+     <WishlistProvider>
+        <PageTabs />
+     </WishlistProvider>
   </AuthProvider>
 );
 
