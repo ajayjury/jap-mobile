@@ -64,6 +64,7 @@ const AuthProvider: React.FC<ChildrenType> = ({children}) => {
       }
     
       const auth:AType = await JSON.parse(ret.value);
+      
       if(!auth.auth.authenticated){
         const data = {auth:{
           authenticated: false,
@@ -74,8 +75,19 @@ const AuthProvider: React.FC<ChildrenType> = ({children}) => {
         setAuth({...data})
         return;
       }
-      const response = await getUserDetails(auth.auth.token)
-      if(response){
+      await getUserDetails(auth)
+      
+    }
+
+    const getUserDetails = async (auth:AType):Promise<void> => {
+      const headers = {
+        headers: {
+          "Authorization" : `Bearer ${auth.auth.token}`,
+          "Accept": 'application/json'
+        }
+      }
+      try {
+        await axiosPublic.get(api_routes.profile, headers);
         const data = {auth:{
           authenticated: auth.auth.authenticated,
           token: auth.auth.token,
@@ -83,7 +95,8 @@ const AuthProvider: React.FC<ChildrenType> = ({children}) => {
           user: auth.auth.user
         }};
         setAuth({...data})
-      }else{
+      } catch (error) {
+        console.log(error);
         const data = {auth:{
           authenticated: false,
           token: '',
@@ -93,23 +106,13 @@ const AuthProvider: React.FC<ChildrenType> = ({children}) => {
         setAuth({...data})
       }
     }
-
-    const getUserDetails = async (token: string):Promise<boolean>=>{
-      try {
-        await axiosPublic.get(api_routes.profile, {
-          headers: {"Authorization" : `Bearer ${token}`}
-        });
-        return true;
-      } catch (error) {
-        return false;
-      }
-    }
     
 
     const setAuth = async (data: AType) => {
       setAuthDetails({...data});
       await setAuthLocally({...data});
     }
+    
 
     return (
       <AuthContext.Provider value={{...auth, setAuth}}>

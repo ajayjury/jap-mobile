@@ -8,6 +8,7 @@ type api_routes = {
     category: string,
     pincode: string,
     profile: string,
+    profile_update: string,
 }
 export const api_routes: api_routes = {
     login: '/api/v1/auth/login',
@@ -19,4 +20,5 @@ export const api_routes: api_routes = {
     category: '/api/v1/category/main/detail',
     pincode: '/api/v1/product/main/pincode',
     profile: '/api/v1/profile',
+    profile_update: '/api/v1/profile/update',
 }

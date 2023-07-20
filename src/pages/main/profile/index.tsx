@@ -14,7 +14,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Input from '../../../components/Input';
 import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
-import { useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../context/AuthProvider";
+import { AxiosResponse } from "axios";
 
 const fields = [
     {
@@ -57,6 +59,7 @@ const Profile: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [responseMessage, setResponseMessage] = useState("");
     const [isToastOpen, setIsToastOpen] = useState(false);
+    const {auth} = useContext(AuthContext);
 
     const {
         handleSubmit,
@@ -71,17 +74,21 @@ const Profile: React.FC = () => {
         resolver: yupResolver(schema),
       });
 
+      useEffect(() => {
+        getProfileDetails();
+      
+        return () => {}
+      }, [auth])
+      
+
       const onSubmit = async (data: any) => {
         setLoading(true);
         try {
-          const response = await axiosPublic.post(api_routes.register, data);
+          const response = await axiosPublic.post(api_routes.profile_update, data, {
+            headers: {"Authorization" : `Bearer ${auth.token}`}
+          });
           setResponseMessage(response.data.message);
           setIsToastOpen(true);
-          reset({
-            name: "",
-            phone: "",
-            email: "",
-          });
         } catch (error: any) {
           console.log(error);
           if (error?.response?.data?.message) {
@@ -111,6 +118,23 @@ const Profile: React.FC = () => {
         }
       };
 
+      const getProfileDetails = useCallback(
+        async() => {
+          try {
+            const response:AxiosResponse = await axiosPublic.get(api_routes.profile, {
+              headers: {"Authorization" : `Bearer ${auth.token}`}
+            });
+            setValue("name", response.data.user.name)
+            setValue("email", response.data.user.email)
+            setValue("phone", response.data.user.phone)
+            
+          } catch (error) {
+            console.log(error);
+          }
+        },
+        [auth],
+      )
+      
 
     return (
         <IonPage>
