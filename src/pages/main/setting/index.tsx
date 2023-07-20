@@ -14,7 +14,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Input from '../../../components/Input';
 import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../../context/AuthProvider";
 
 const fields = [
   {
@@ -56,6 +57,7 @@ const Setting: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [responseMessage, setResponseMessage] = useState("");
     const [isToastOpen, setIsToastOpen] = useState(false);
+    const {auth} = useContext(AuthContext);
 
     const {
         handleSubmit,
@@ -73,7 +75,9 @@ const Setting: React.FC = () => {
       const onSubmit = async (data: any) => {
         setLoading(true);
         try {
-          const response = await axiosPublic.post(api_routes.register, data);
+          const response = await axiosPublic.post(api_routes.password_update, data, {
+            headers: {"Authorization" : `Bearer ${auth.token}`}
+          });
           setResponseMessage(response.data.message);
           setIsToastOpen(true);
           reset({

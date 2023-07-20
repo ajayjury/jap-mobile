@@ -9,6 +9,7 @@ type api_routes = {
     pincode: string,
     profile: string,
     profile_update: string,
+    password_update: string,
 }
 export const api_routes: api_routes = {
     login: '/api/v1/auth/login',
@@ -21,4 +22,5 @@ export const api_routes: api_routes = {
     pincode: '/api/v1/product/main/pincode',
     profile: '/api/v1/profile',
     profile_update: '/api/v1/profile/update',
+    password_update: '/api/v1/profile/update-password',
 }
