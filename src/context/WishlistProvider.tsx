@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { ChildrenType } from "../helper/types";
-import { GetResult, Preferences } from '@capacitor/preferences';
 import { axiosPublic } from "../../axios";
 import { api_routes } from "../helper/routes";
 import { AuthContext } from "./AuthProvider";

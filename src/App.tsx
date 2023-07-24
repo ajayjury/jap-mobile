@@ -33,13 +33,16 @@ import './theme/global.css';
 import AuthProvider from './context/AuthProvider';
 import PageTabs from './components/PageTabs';
 import WishlistProvider from './context/WishlistProvider';
+import CartProvider from './context/CartProvider';
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <AuthProvider>
      <WishlistProvider>
-        <PageTabs />
+        <CartProvider>
+            <PageTabs />
+        </CartProvider>
      </WishlistProvider>
   </AuthProvider>
 );

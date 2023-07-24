@@ -5,7 +5,7 @@ import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import MainFooter from '../../../components/MainFooter';
-import { bookmarkOutline, cartOutline, informationCircleOutline } from 'ionicons/icons';
+import { bookmarkOutline, car, cartOutline, informationCircleOutline } from 'ionicons/icons';
 import BackHeader from '../../../components/BackHeader';
 import ReviewItem from '../../../components/ReviewItem';
 import * as yup from "yup";
@@ -20,6 +20,8 @@ import LoadingDetail from '../../../components/LoadingDetail';
 import LoadingPricingTable from '../../../components/LoadingPricingTable';
 import CartQuantity from '../../../components/CartQuantity';
 import { WishlistContext } from '../../../context/WishlistProvider';
+import { CartContext } from '../../../context/CartProvider';
+import { AuthContext } from '../../../context/AuthProvider';
 
 
 interface ProductProps extends RouteComponentProps<{
@@ -66,12 +68,21 @@ const pincodeSchema = yup
 const ProductDetail: React.FC<ProductProps> = ({match}) => {
 
   const {wishlist, setWishlist, wishlistLoading } = useContext(WishlistContext);
+  const {cart, setCart, cartLoading } = useContext(CartContext);
+  const {auth} = useContext(AuthContext);
   const [showSubHeader, setShowSubHeader] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingPincode, setLoadingPincode] = useState<boolean>(false);
   const [productLoading, setProductLoading] = useState<boolean>(false);
   const [responseMessage, setResponseMessage] = useState<string>("");
-  const [pincodeResponseMessage, setPincodeResponseMessage] = useState<string>("");
+  const [cartQuantity, setCartQuantity] = useState<number>(1);
+  const [pincodeResponseMessage, setPincodeResponseMessage] = useState<{
+    message: string,
+    status: 'success'|'error'
+  }>({
+    message: '',
+    status: 'error'
+  });
   const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
   const [product, setProduct] = useState<ProductSegmentState>({
     id: 0,
@@ -192,19 +203,26 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
   
   const onPincodeSubmitHandler = async (data: any) => {
     setLoadingPincode(true);
-    setPincodeResponseMessage("");
+    setPincodeResponseMessage({
+        message: '',
+        status: 'error'
+    });
     try {
       const response = await axiosPublic.post(api_routes.pincode+`/${match.params.slug}`, data);
-      setPincodeResponseMessage(data.pincode);
-      setIsToastOpen(true);
+        setPincodeResponseMessage({
+            message: data.pincode,
+            status: 'success'
+        });
       pincodeForm.reset({
         pincode: "",
       });
     } catch (error: any) {
       console.log(error);
-      if (error?.response?.data?.message) {
-        setResponseMessage(error?.response?.data?.message);
-        setIsToastOpen(true);
+      if (error?.response?.data?.message && !error?.response?.data?.availability) {
+        setPincodeResponseMessage({
+            message: error?.response?.data?.message,
+            status: 'error'
+        });
       }
       if (error?.response?.data?.errors?.pincode) {
         pincodeForm.setError("pincode", {
@@ -223,6 +241,34 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
     } else{
         const filteredWishlist = wishlist.wishlist.filter(item=> item!=id);
         setWishlist([...filteredWishlist])
+    }
+  }
+
+  useEffect(() => {
+    getProductCartDetail()
+    return () => {}
+  }, [match.params.slug, product, auth, cart])
+  
+  const getProductCartDetail = () =>{
+    const cart_prod = cart.cart.filter((item: any)=>item.product_id==product.id);
+    if(cart_prod.length>0){
+        setCartQuantity(cart_prod[0].quantity);
+    }else{
+        setCartQuantity(1);
+    }
+  }
+  
+  
+  const cartHandler = (quantity:number) => {
+     
+    const filteredCart = cart.cart.filter(item=> item.product_id==product.id);
+    if(filteredCart.length<1){
+        setCart([...cart.cart, {quantity, product_id: product.id}])
+    } else{
+        const index = cart.cart.findIndex(x => x.product_id==product.id);
+        const cartArr = cart.cart;
+        cartArr[index].quantity = quantity;
+        setCart([...cartArr])
     }
   }
 
@@ -377,11 +423,14 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                                     )}
                                     </IonButton>
                                 </IonCol>
-                                {pincodeResponseMessage.length>0 && <IonCol
+                                {pincodeResponseMessage.message.length>0 && <IonCol
                                     size="12"
                                     className='text-center'
                                 >
-                                    <p className='text-success mb-0 d-flex ion-align-items-center ion-justify-content-center'><IonIcon slot="start" className='info-icon-green' icon={informationCircleOutline}></IonIcon> Product available for pincode : <b>{pincodeResponseMessage}</b></p>
+                                    {pincodeResponseMessage.status=='error' ? 
+                                        <p className={`text-${pincodeResponseMessage.status} mb-0 d-flex ion-align-items-center ion-justify-content-center`}><IonIcon slot="start" className={`info-icon-green`} icon={informationCircleOutline}></IonIcon> {pincodeResponseMessage.message}</p> :
+                                        <p className={`text-${pincodeResponseMessage.status} mb-0 d-flex ion-align-items-center ion-justify-content-center`}><IonIcon slot="start" className={`info-icon-green`} icon={informationCircleOutline}></IonIcon> Product available for pincode : <b>{pincodeResponseMessage.message}</b></p>
+                                    }
                                 </IonCol>}
                             </IonRow>
                         </form>
@@ -517,24 +566,7 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                 
                 <MainFooter />
                 <div className="final-table-2"></div>
-                <IonItemDivider className="cart-divider-total" slot="fixed">
-                        <IonRow className="ion-align-items-center ion-justify-content-between p-0 w-100">
-                            <IonCol
-                                size="6"
-                                className='text-left'
-                            >
-                                <CartQuantity max_quantity={product.inventory} />
-                            </IonCol>
-                            <IonCol
-                                size="6"
-                                className='text-right'
-                            >
-                                <IonButton className="m-0 p-0 cart-btn" fill='solid' color="success">
-                                    <IonIcon icon={cartOutline} slot="start"></IonIcon> Add
-                                </IonButton>
-                            </IonCol>
-                        </IonRow>
-                </IonItemDivider>
+                <CartQuantity max_quantity={product.inventory} cartHandler={cartHandler} cartLoading={cartLoading} quantity_count={cartQuantity} />
             </>}
         </IonContent>
       </IonPage>

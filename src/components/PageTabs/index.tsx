@@ -18,9 +18,11 @@ import Wishlist from "../../pages/main/wishlist";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthProvider";
 import Account from "../../pages/main/account";
+import { CartContext } from "../../context/CartProvider";
 
 const PageTabs: React.FC = () => {
   const {auth} = useContext(AuthContext);
+  const {cart } = useContext(CartContext);
 
   return (
     <IonApp>
@@ -60,7 +62,7 @@ const PageTabs: React.FC = () => {
             <IonTabButton className='main-tabs' tab="cart" href="/cart">
               <>
                 <IonIcon icon={cartOutline} />
-                <IonBadge color="success">2</IonBadge>
+                <IonBadge color="success">{cart.cart.length}</IonBadge>
               </>
               <IonLabel>Cart</IonLabel>
             </IonTabButton>
