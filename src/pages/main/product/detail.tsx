@@ -3,9 +3,9 @@ import { isPlatform } from '@ionic/react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import MainFooter from '../../../components/MainFooter';
-import { bookmarkOutline, informationCircleOutline } from 'ionicons/icons';
+import { bookmarkOutline, cartOutline, informationCircleOutline } from 'ionicons/icons';
 import BackHeader from '../../../components/BackHeader';
 import ReviewItem from '../../../components/ReviewItem';
 import * as yup from "yup";
@@ -19,6 +19,7 @@ import { AxiosResponse } from 'axios';
 import LoadingDetail from '../../../components/LoadingDetail';
 import LoadingPricingTable from '../../../components/LoadingPricingTable';
 import CartQuantity from '../../../components/CartQuantity';
+import { WishlistContext } from '../../../context/WishlistProvider';
 
 
 interface ProductProps extends RouteComponentProps<{
@@ -64,6 +65,7 @@ const pincodeSchema = yup
 
 const ProductDetail: React.FC<ProductProps> = ({match}) => {
 
+  const {wishlist, setWishlist, wishlistLoading } = useContext(WishlistContext);
   const [showSubHeader, setShowSubHeader] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingPincode, setLoadingPincode] = useState<boolean>(false);
@@ -215,6 +217,15 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
     }
   };
 
+  const wishlistHandler = (id:number) => {   
+    if([...wishlist.wishlist].indexOf(id)<0){
+        setWishlist([...wishlist.wishlist, product.id])
+    } else{
+        const filteredWishlist = wishlist.wishlist.filter(item=> item!=id);
+        setWishlist([...filteredWishlist])
+    }
+  }
+
     return (
       <IonPage>
         <BackHeader title={product.name} link='/products' />
@@ -251,10 +262,11 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                                 <div style={{marginTop:5, marginBottom: 5}}>
                                     <p className='p-0 m-0'><s>Rs. {product?.price}</s> <b>Rs. {product?.discounted_price}</b></p>
                                 </div>
-                                <IonButton className="m-0 p-0" fill='solid' size='small' color="success">
+                                {wishlistLoading ? <IonSpinner name="dots" color={'success'}></IonSpinner> : 
+                                <IonButton className="m-0 p-0" fill='solid' size='small' disabled={wishlistLoading} color={[...wishlist.wishlist].indexOf(product.id)<0 ? "success" : "danger"} onClick={()=>wishlistHandler(product.id)}>
                                     <IonIcon slot="start" icon={bookmarkOutline}></IonIcon>
-                                    wishlist
-                                </IonButton>
+                                    {[...wishlist.wishlist].indexOf(product.id)<0 ? 'wishlist' : 'remove'}
+                                </IonButton>}
                             </IonCol>
                         </IonRow>
                     </div>
@@ -518,7 +530,7 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                                 className='text-right'
                             >
                                 <IonButton className="m-0 p-0 cart-btn" fill='solid' color="success">
-                                    Add to Cart
+                                    <IonIcon icon={cartOutline} slot="start"></IonIcon> Add
                                 </IonButton>
                             </IonCol>
                         </IonRow>

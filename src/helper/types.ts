@@ -61,6 +61,39 @@ export interface ProductSegmentState<> {
     categories: []|CategoryState[]
 }
 
+export interface WishlistProducts<> {
+    id: number;
+    name: string;
+    slug: string;
+    description?: string;
+    meta_title?: string;
+    meta_keywords?: string;
+    meta_description?: string;
+    featured_image_link?: string;
+    created_at: string;
+    updated_at: string;
+    is_active: boolean;
+    discount: number;
+    discounted_price: number;
+    image_alt?: string;
+    image_title?: string;
+    in_stock: boolean;
+    inventory: number;
+    is_best_sale: boolean;
+    is_featured: boolean;
+    is_new_arrival: boolean
+    price: number
+    categories: []|CategoryState[]
+}
+
+export interface Wishlist<> {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    total_items: number
+    products: []|WishlistProducts[]
+}
+
 export interface Meta<> {
     next_disabled: boolean;
     prev_disabled: boolean;

@@ -10,6 +10,7 @@ type api_routes = {
     profile: string,
     profile_update: string,
     password_update: string,
+    wishlist: string,
 }
 export const api_routes: api_routes = {
     login: '/api/v1/auth/login',
@@ -23,4 +24,5 @@ export const api_routes: api_routes = {
     profile: '/api/v1/profile',
     profile_update: '/api/v1/profile/update',
     password_update: '/api/v1/profile/update-password',
+    wishlist: '/api/v1/wishlist'
 }

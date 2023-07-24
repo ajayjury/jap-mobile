@@ -1,11 +1,37 @@
-import { IonItemGroup, IonItemDivider, IonRow, IonCol, IonLabel, IonButton, IonIcon, IonImg, IonText, IonInput } from "@ionic/react";
-import { trashOutline } from "ionicons/icons";
+import { IonItemGroup, IonItemDivider, IonRow, IonCol, IonLabel, IonButton, IonIcon, IonImg, IonText, IonInput, IonSpinner } from "@ionic/react";
+import { cartOutline, trashOutline } from "ionicons/icons";
 
 type Props = {
     type: 'cart'|'wishlist',
+    id: number;
+    name: string;
+    slug: string;
+    description?: string;
+    meta_title?: string;
+    meta_keywords?: string;
+    meta_description?: string;
+    featured_image_link?: string;
+    created_at: string;
+    updated_at: string;
+    is_active: boolean;
+    discount: number;
+    discounted_price: number;
+    image_alt?: string;
+    image_title?: string;
+    in_stock: boolean;
+    inventory: number;
+    is_best_sale: boolean;
+    is_featured: boolean;
+    is_new_arrival: boolean
+    price: number
+    loading?: boolean
+    deleteHandler?: (data:number) => void
 };
 
-const CartItem: React.FC<Props> = ({type}) => {
+const CartItem: React.FC<Props> = ({type, id, name, slug, description, featured_image_link, discount, discounted_price, price, deleteHandler, loading}) => {
+    const deleteClickHandler = () => {
+        deleteHandler && deleteHandler(id);
+    }
     return (
         <IonItemGroup>
             <IonItemDivider className="cart-divider">
@@ -14,15 +40,16 @@ const CartItem: React.FC<Props> = ({type}) => {
                         size="10"
                         className='text-left'
                     >
-                        <IonLabel>Product 1</IonLabel>
+                        <IonLabel>{name}</IonLabel>
                     </IonCol>
                     <IonCol
                         size="2"
                         className='text-right'
                     >
-                        <IonButton className="pagination-btn m-0" fill='outline' color="danger">
+                        {loading ? <IonSpinner name="dots" color={'danger'}></IonSpinner> : 
+                        <IonButton className="pagination-btn m-0" fill='outline' color="danger" disabled={loading} onClick={deleteClickHandler}>
                             <IonIcon icon={trashOutline}></IonIcon>
-                        </IonButton>
+                        </IonButton>}
                     </IonCol>
                 </IonRow>
             </IonItemDivider>
@@ -33,7 +60,7 @@ const CartItem: React.FC<Props> = ({type}) => {
                         className='text-left'
                     >
                         <div className='product-img-container'>
-                            <IonImg alt="product" className='' src='https://orgado-react.vercel.app/assets/img/trending/product/product-01.png' />
+                            <IonImg alt="product" className='' src={featured_image_link} />
                         </div>
                     </IonCol>
                     <IonCol
@@ -41,9 +68,9 @@ const CartItem: React.FC<Props> = ({type}) => {
                         className='text-left'
                     >
                         <IonText color="success" className="text-left mb-0 pb-0">
-                            <h6 className="text-left mb-0 pb-0 mt-0 pt-0">Product 1</h6>
+                            <h6 className="text-left mb-0 pb-0 mt-0 pt-0">{name}</h6>
                         </IonText>
-                        <p className="limit-text-2 mt-0 pt-0 mb-0 pb-0">Premium designed icons for use in web, iOS, Android, and desktop apps. Support for SVG and web font. Completely open source, MIT licensed and built by Ionic.</p>
+                        <p className="limit-text-2 mt-0 pt-0 mb-0 pb-0">{description}</p>
                         <div className="d-flex ion-align-items-center">
                             <div className="quantity-holder">
                                 <div className="col-auto">
@@ -61,7 +88,7 @@ const CartItem: React.FC<Props> = ({type}) => {
                                 </div>
                             </div>
                             {type=='wishlist' && <IonButton color={'success'} size="small" className="p-0 cart-btn">
-                                Add to Cart
+                                <IonIcon icon={cartOutline} slot="start"></IonIcon> Add
                             </IonButton>}
                         </div>
                     </IonCol>
@@ -70,15 +97,15 @@ const CartItem: React.FC<Props> = ({type}) => {
                     <thead className="w-100">
                         <tr className="border-bottom-1 w-100">
                             <td className="text-left tr-price">Price:</td>
-                            <td className="text-right tr-price">Rs. 100</td>
+                            <td className="text-right tr-price">Rs. {price}</td>
                         </tr>
                         <tr className="border-bottom-1 w-100">
                             <td className="text-left tr-price">Discount:</td>
-                            <td className="text-right tr-price">Rs. 100</td>
+                            <td className="text-right tr-price">{discount}%</td>
                         </tr>
                         <tr className="border-bottom-1 w-100">
                             <td className="text-left tr-price font-bold">Total:</td>
-                            <td className="text-right tr-price font-bold">Rs. 100</td>
+                            <td className="text-right tr-price font-bold">Rs. {discounted_price}</td>
                         </tr>
                     </thead>
                 </table>
