@@ -25,15 +25,13 @@ type Props = {
     is_best_sale: boolean;
     is_featured: boolean;
     is_new_arrival: boolean
-    price: number;
-    quantity: number;
-    total_quantity_price: number;
+    price: number
     loading?: boolean
     deleteHandler?: (data:number) => void
 };
 
-const CartItem: React.FC<Props> = ({id, name, slug, description, featured_image_link, discount, discounted_price, price, inventory, total_quantity_price, quantity=1, deleteHandler, loading}) => {
-    const [cartQuantity, setCartQuantity] = useState<number>(quantity);
+const WishlistItem: React.FC<Props> = ({id, name, slug, description, featured_image_link, discount, discounted_price, price, inventory, deleteHandler, loading}) => {
+    const [cartQuantity, setCartQuantity] = useState<number>(1);
     const {cart, setCart, cartLoading } = useContext(CartContext);
 
     const deleteClickHandler = () => {
@@ -119,12 +117,8 @@ const CartItem: React.FC<Props> = ({id, name, slug, description, featured_image_
                             <td className="text-right tr-price">{discount}%</td>
                         </tr>
                         <tr className="border-bottom-1 w-100">
-                            <td className="text-left tr-price">Discounted Price:</td>
-                            <td className="text-right tr-price">Rs. {discounted_price}</td>
-                        </tr>
-                        <tr className="border-bottom-1 w-100">
-                            <td className="text-left tr-price font-bold">Total ( Rs. {discounted_price} x {quantity} pcs ):</td>
-                            <td className="text-right tr-price font-bold">Rs. {total_quantity_price}</td>
+                            <td className="text-left tr-price font-bold">Total:</td>
+                            <td className="text-right tr-price font-bold">Rs. {discounted_price}</td>
                         </tr>
                     </thead>
                 </table>
@@ -133,4 +127,4 @@ const CartItem: React.FC<Props> = ({id, name, slug, description, featured_image_
     );
 }
 
-export default CartItem;
+export default WishlistItem;

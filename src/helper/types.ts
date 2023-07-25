@@ -86,12 +86,66 @@ export interface WishlistProducts<> {
     categories: []|CategoryState[]
 }
 
+export interface CartProducts<> {
+    id: number;
+    name: string;
+    slug: string;
+    description?: string;
+    meta_title?: string;
+    meta_keywords?: string;
+    meta_description?: string;
+    featured_image_link?: string;
+    created_at: string;
+    updated_at: string;
+    is_active: boolean;
+    discount: number;
+    discounted_price: number;
+    image_alt?: string;
+    image_title?: string;
+    in_stock: boolean;
+    inventory: number;
+    is_best_sale: boolean;
+    is_featured: boolean;
+    is_new_arrival: boolean
+    price: number
+    quantity: number
+    total_quantity_price: number
+    categories: []|CategoryState[]
+}
+
+export interface Coupon<> {
+    code: string|null;
+    description: string|null;
+    discount: string|null;
+    maximum_dicount_in_price: string|null;
+    maximum_number_of_use: string|null;
+    name: string|null;
+}
+
 export interface Wishlist<> {
     id: number;
     created_at: string;
     updated_at: string;
     total_items: number
     products: []|WishlistProducts[]
+}
+
+export interface Cart<> {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    coupon_discount: number;
+    delivery_charge: number;
+    gst_charge: number;
+    sub_total: number;
+    total_discount: number;
+    total_items: number;
+    total_price_with_coupon_dicount: number;
+    total_price_with_gst_delivery_charge: number;
+    total_price_without_gst_delivery_charge: number;
+    total_quantity: number;
+    coupon: Coupon;
+    products: []|CartProducts[]
 }
 
 export interface Meta<> {

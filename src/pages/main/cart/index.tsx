@@ -27,13 +27,16 @@ import * as yup from "yup";
 import Input from "../../../components/Input";
 import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import EmptyCart from "../../../components/EmptyCart";
 import { chevronForwardOutline } from "ionicons/icons";
 import CartItem from "../../../components/CartItem";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import { ErrorMessage } from "@hookform/error-message";
 import { AuthContext } from "../../../context/AuthProvider";
+import { CartContext } from "../../../context/CartProvider";
+import LoadingPricingTable from "../../../components/LoadingPricingTable";
+import { Cart as CartType } from "../../../helper/types";
 
 const fields = [
     {
@@ -116,8 +119,33 @@ const Cart: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [responseMessage, setResponseMessage] = useState("");
     const [isToastOpen, setIsToastOpen] = useState(false);
+    const [cartProducts, setCartProducts] = useState<CartType>({
+        id: 0,
+        total_items:0,
+        coupon_discount: 0,
+        delivery_charge: 0,
+        gst_charge: 0,
+        sub_total: 0,
+        total_discount: 0,
+        total_price_with_coupon_dicount: 0,
+        total_price_with_gst_delivery_charge: 0,
+        total_price_without_gst_delivery_charge: 0,
+        total_quantity: 0,
+        coupon: {
+          name: null,
+          description: null,
+          discount: null,
+          maximum_dicount_in_price: null,
+          maximum_number_of_use: null,
+          code: null,
+        },
+        products:[],
+        created_at: '',
+        updated_at: '',
+    });
 
     const {auth} = useContext(AuthContext);
+    const {cart, setCart, cartLoading } = useContext(CartContext);
 
     const modal = useRef<HTMLIonModalElement>(null);
 
@@ -133,6 +161,30 @@ const Cart: React.FC = () => {
       if (ev.detail.role === 'confirm') {
         setMessage(`Hello, ${ev.detail.data}!`);
       }
+    }
+
+    useEffect(() => {
+        getWishlist()
+        return () => {}
+    }, [auth, cart])
+
+    const getWishlist = async () => {
+        setLoading(true);
+        try {
+          const response = await axiosPublic.get(api_routes.cart, {
+            headers: {"Authorization" : `Bearer ${auth.token}`}
+          });
+          setCartProducts(response.data.cart)
+        } catch (error: any) {
+          console.log(error);
+        }finally {
+            setLoading(false);
+        }
+    }
+
+    const removeWishlistHandler = (data:number) => {   
+        const filteredWishlist = cart.cart.filter(item=> item.product_id!=data);
+        setCart([...filteredWishlist])
     }
 
     const {
@@ -239,7 +291,12 @@ const Cart: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen={false} forceOverscroll={true}>
-                {auth.authenticated ? <>
+                {auth.authenticated ? 
+                loading ? <>
+                    <LoadingPricingTable />
+                    <LoadingPricingTable />
+                </>:
+                cartProducts.products.length>0 ? <>
                 
                   <IonCard className=" mt-2 mb-2">
                       <div className='ion-padding pt-0 pb-2'>
@@ -247,8 +304,9 @@ const Cart: React.FC = () => {
                               <h6>Cart Items</h6>
                           </div>
                       </div>
-                      <CartItem type="cart" />
-                      <CartItem type="cart" />
+                      {
+                          cartProducts.products.map((item, i) => <CartItem {...item} deleteHandler={removeWishlistHandler} loading={cartLoading} key={i} />)
+                      }
                   </IonCard>
 
                   <IonCard className="final-table mt-2 mb-2">
@@ -294,35 +352,35 @@ const Cart: React.FC = () => {
                           <thead className="w-100">
                               <tr className="border-bottom-1 w-100">
                                   <td className="text-left tr-price">Total Items:</td>
-                                  <td className="text-right tr-price">3</td>
+                                  <td className="text-right tr-price">{cartProducts.total_items}</td>
                               </tr>
                               <tr className="border-bottom-1 w-100">
                                   <td className="text-left tr-price">Sub Total:</td>
-                                  <td className="text-right tr-price">Rs. 16020</td>
+                                  <td className="text-right tr-price">Rs. {cartProducts.sub_total}</td>
                               </tr>
                               <tr className="border-bottom-1 w-100">
                                   <td className="text-left tr-price">Total Discount:</td>
-                                  <td className="text-right tr-price">Rs. 100</td>
+                                  <td className="text-right tr-price">- Rs. {cartProducts.total_discount}</td>
                               </tr>
                               <tr className="border-bottom-1 w-100">
                                   <td className="text-left tr-price">GST:</td>
-                                  <td className="text-right tr-price">Rs. 100</td>
+                                  <td className="text-right tr-price">+ Rs. {cartProducts.gst_charge}</td>
                               </tr>
                               <tr className="border-bottom-1 w-100">
                                   <td className="text-left tr-price">Delivery Charge:</td>
-                                  <td className="text-right tr-price">Rs. 100</td>
+                                  <td className="text-right tr-price">+ Rs. {cartProducts.delivery_charge}</td>
                               </tr>
                               <tr className="border-bottom-1 w-100">
                                   <td className="text-left tr-price font-bold">Cumulative Total:</td>
-                                  <td className="text-right tr-price font-bold">Rs. 16020</td>
+                                  <td className="text-right tr-price font-bold">Rs. {(cartProducts.total_price_with_gst_delivery_charge).toFixed(2)}</td>
                               </tr>
                               <tr className="border-bottom-1 w-100">
                                   <td className="text-left tr-price">Coupon Discount:</td>
-                                  <td className="text-right tr-price">Rs. 100</td>
+                                  <td className="text-right tr-price">- Rs. {cartProducts.coupon_discount}</td>
                               </tr>
                               <tr className="border-bottom-1 w-100 total-bg-table-tr">
                                   <td className="text-left tr-price font-bold">Total:</td>
-                                  <td className="text-right tr-price font-bold">Rs. 16020</td>
+                                  <td className="text-right tr-price font-bold">Rs. {cartProducts.total_price_with_coupon_dicount}</td>
                               </tr>
                           </thead>
                       </table>
@@ -335,7 +393,7 @@ const Cart: React.FC = () => {
                               className='text-left'
                           >
                               <IonText className="text-left mb-0 pb-0">
-                                  <h4 className="text-left mb-0 pb-0 mt-0 pt-0">Rs. 16020</h4>
+                                  <h4 className="text-left mb-0 pb-0 mt-0 pt-0">Rs. {cartProducts.total_price_with_coupon_dicount}</h4>
                               </IonText>
                           </IonCol>
                           <IonCol
@@ -433,7 +491,7 @@ const Cart: React.FC = () => {
                       </IonContent>
                   </IonModal>
 
-                </> : <EmptyCart type="cart" />}
+                </> : <EmptyCart type="cart" /> : <EmptyCart type="cart" />}
 
             </IonContent>
         </IonPage>

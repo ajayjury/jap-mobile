@@ -8,7 +8,7 @@ import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
 import { useContext, useEffect, useState } from "react";
 import EmptyCart from "../../../components/EmptyCart";
-import CartItem from "../../../components/CartItem";
+import WishlistItem from "../../../components/WishlistItem";
 import BackHeader from "../../../components/BackHeader";
 import { AuthContext } from "../../../context/AuthProvider";
 import { WishlistContext } from "../../../context/WishlistProvider";
@@ -72,7 +72,7 @@ const Wishlist: React.FC = () => {
                         </div>
                     </div>
                     {
-                        wishlistProducts.products.map((item, i) => <CartItem {...item} deleteHandler={removeWishlistHandler} loading={wishlistLoading} key={i} />)
+                        wishlistProducts.products.map((item, i) => <WishlistItem {...item} deleteHandler={removeWishlistHandler} loading={wishlistLoading} key={i} />)
                     }
                 </IonCard>
 
