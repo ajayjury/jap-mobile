@@ -182,9 +182,11 @@ const Cart: React.FC = () => {
         }
     }
 
-    const removeWishlistHandler = (data:number) => {   
+    const removeCartHandler = (data:number) => {   
         const filteredWishlist = cart.cart.filter(item=> item.product_id!=data);
         setCart([...filteredWishlist])
+        setResponseMessage('Product removed from cart');
+        setIsToastOpen(true);
     }
 
     const {
@@ -305,7 +307,7 @@ const Cart: React.FC = () => {
                           </div>
                       </div>
                       {
-                          cartProducts.products.map((item, i) => <CartItem {...item} deleteHandler={removeWishlistHandler} loading={cartLoading} key={i} />)
+                          cartProducts.products.map((item, i) => <CartItem {...item} deleteHandler={removeCartHandler} loading={cartLoading} key={i} />)
                       }
                   </IonCard>
 
@@ -492,6 +494,23 @@ const Cart: React.FC = () => {
                   </IonModal>
 
                 </> : <EmptyCart type="cart" /> : <EmptyCart type="cart" />}
+                <div className="ion-padding">
+                    <IonToast
+                        isOpen={isToastOpen}
+                        message={responseMessage}
+                        onDidDismiss={() => setIsToastOpen(false)}
+                        duration={5000}
+                        buttons={[
+                        {
+                            text: "Close",
+                            handler: () => {
+                            setIsToastOpen(false);
+                            },
+                        },
+                        ]}
+                        layout="stacked"
+                    ></IonToast>
+                  </div>
 
             </IonContent>
         </IonPage>

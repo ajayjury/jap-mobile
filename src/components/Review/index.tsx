@@ -72,7 +72,6 @@ const Review: React.FC<Props> = ({product_id, reviews}) => {
     });
 
     const onSubmit = async (data: any) => {
-        // console.log(data);return;
         
         setLoading(true);
         try {

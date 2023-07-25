@@ -52,6 +52,8 @@ const Wishlist: React.FC = () => {
     const removeWishlistHandler = (data:number) => {   
         const filteredWishlist = wishlist.wishlist.filter(item=> item!=data);
         setWishlist([...filteredWishlist])
+        setResponseMessage('Product removed from wishlist');
+        setIsToastOpen(true);
     }
     
 
@@ -77,26 +79,25 @@ const Wishlist: React.FC = () => {
                 </IonCard>
 
 
-                <div className="ion-padding">
-                    <IonToast
-                        isOpen={isToastOpen}
-                        message={responseMessage}
-                        onDidDismiss={() => setIsToastOpen(false)}
-                        duration={5000}
-                        buttons={[
-                        {
-                            text: "Close",
-                            handler: () => {
-                            setIsToastOpen(false);
-                            },
-                        },
-                        ]}
-                        layout="stacked"
-                    ></IonToast>
-                </div>
-
             </> : <EmptyCart type="wishlist" />}
                 
+            <div className="ion-padding">
+                <IonToast
+                    isOpen={isToastOpen}
+                    message={responseMessage}
+                    onDidDismiss={() => setIsToastOpen(false)}
+                    duration={5000}
+                    buttons={[
+                    {
+                        text: "Close",
+                        handler: () => {
+                        setIsToastOpen(false);
+                        },
+                    },
+                    ]}
+                    layout="stacked"
+                ></IonToast>
+            </div>
 
             </IonContent>
         </IonPage>

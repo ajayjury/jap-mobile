@@ -1,4 +1,4 @@
-import { IonPage, IonContent, IonImg, ScrollDetail, IonButton, IonCol, IonIcon, IonItemDivider, IonRow, IonText, IonInput, IonItem, IonCard, IonSpinner } from '@ionic/react';
+import { IonPage, IonContent, IonImg, ScrollDetail, IonButton, IonCol, IonIcon, IonItemDivider, IonRow, IonText, IonInput, IonItem, IonCard, IonSpinner, IonToast } from '@ionic/react';
 import { isPlatform } from '@ionic/react';
 import { RouteComponentProps } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
@@ -50,6 +50,7 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
     status: 'error'
   });
   const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
+  const [responseMessage, setResponseMessage] = useState<string>("");
   const [product, setProduct] = useState<ProductSegmentState>({
     id: 0,
     name: '',
@@ -151,9 +152,13 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
   const wishlistHandler = (id:number) => {   
     if([...wishlist.wishlist].indexOf(id)<0){
         setWishlist([...wishlist.wishlist, product.id])
+        setResponseMessage('Product added to wishlist');
+        setIsToastOpen(true);
     } else{
         const filteredWishlist = wishlist.wishlist.filter(item=> item!=id);
         setWishlist([...filteredWishlist])
+        setResponseMessage('Product removed from wishlist');
+        setIsToastOpen(true);
     }
   }
 
@@ -183,6 +188,8 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
         cartArr[index].quantity = quantity;
         setCart([...cartArr])
     }
+    setResponseMessage('Product added to cart');
+    setIsToastOpen(true);
   }
 
     return (
@@ -415,6 +422,21 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                 <MainFooter />
                 <div className="final-table-2"></div>
                 <CartQuantity max_quantity={product.inventory} cartHandler={cartHandler} cartLoading={cartLoading} quantity_count={cartQuantity} />
+                <IonToast
+                    isOpen={isToastOpen}
+                    message={responseMessage}
+                    onDidDismiss={() => setIsToastOpen(false)}
+                    duration={5000}
+                    buttons={[
+                    {
+                        text: "Close",
+                        handler: () => {
+                        setIsToastOpen(false);
+                        },
+                    },
+                    ]}
+                    layout="stacked"
+                ></IonToast>
             </>}
         </IonContent>
       </IonPage>
