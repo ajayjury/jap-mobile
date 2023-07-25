@@ -12,6 +12,7 @@ type api_routes = {
     password_update: string,
     wishlist: string,
     cart: string,
+    rating: string,
 }
 export const api_routes: api_routes = {
     login: '/api/v1/auth/login',
@@ -27,4 +28,5 @@ export const api_routes: api_routes = {
     password_update: '/api/v1/profile/update-password',
     wishlist: '/api/v1/wishlist',
     cart: '/api/v1/cart',
+    rating: '/api/v1/product/main/reviews',
 }

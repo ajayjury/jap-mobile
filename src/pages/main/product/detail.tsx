@@ -1,20 +1,18 @@
-import { IonPage, IonContent, IonImg, ScrollDetail, IonButton, IonCol, IonIcon, IonItemDivider, IonRow, IonText, IonInput, IonItem, IonAvatar, IonLabel, IonBadge, IonCard, IonList, IonSpinner, IonTextarea } from '@ionic/react';
+import { IonPage, IonContent, IonImg, ScrollDetail, IonButton, IonCol, IonIcon, IonItemDivider, IonRow, IonText, IonInput, IonItem, IonCard, IonSpinner } from '@ionic/react';
 import { isPlatform } from '@ionic/react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import MainFooter from '../../../components/MainFooter';
-import { bookmarkOutline, car, cartOutline, informationCircleOutline } from 'ionicons/icons';
+import { bookmarkOutline, informationCircleOutline } from 'ionicons/icons';
 import BackHeader from '../../../components/BackHeader';
-import ReviewItem from '../../../components/ReviewItem';
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import Input from '../../../components/Input';
 import { ErrorMessage } from '@hookform/error-message';
 import Slider from '../../../components/Slider';
-import { BannerImages, ProductSegmentState } from '../../../helper/types';
+import { ProductSegmentState } from '../../../helper/types';
 import { AxiosResponse } from 'axios';
 import LoadingDetail from '../../../components/LoadingDetail';
 import LoadingPricingTable from '../../../components/LoadingPricingTable';
@@ -22,42 +20,12 @@ import CartQuantity from '../../../components/CartQuantity';
 import { WishlistContext } from '../../../context/WishlistProvider';
 import { CartContext } from '../../../context/CartProvider';
 import { AuthContext } from '../../../context/AuthProvider';
+import Review from '../../../components/Review';
 
 
 interface ProductProps extends RouteComponentProps<{
     slug: string;
 }> {}
-
-const images = [
-  '/images/product1.png',
-  '/images/product2.png',
-  '/images/product3.jpg',
-];
-
-const fields = [
-    {
-      placeholder: "Enter name",
-      label: "Name",
-      type: "text",
-      name: "name",
-      inputmode: "text",
-    },
-    {
-      placeholder: "Enter email",
-      label: "Email",
-      type: "email",
-      name: "email",
-      inputmode: "email",
-    },
-];
-
-const schema = yup
-  .object({
-    name: yup.string().required(),
-    email: yup.string().email().required(),
-    message: yup.string().required(),
-  })
-  .required();
 
 const pincodeSchema = yup
   .object({
@@ -71,10 +39,8 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
   const {cart, setCart, cartLoading } = useContext(CartContext);
   const {auth} = useContext(AuthContext);
   const [showSubHeader, setShowSubHeader] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [loadingPincode, setLoadingPincode] = useState<boolean>(false);
   const [productLoading, setProductLoading] = useState<boolean>(false);
-  const [responseMessage, setResponseMessage] = useState<string>("");
   const [cartQuantity, setCartQuantity] = useState<number>(1);
   const [pincodeResponseMessage, setPincodeResponseMessage] = useState<{
     message: string,
@@ -136,19 +102,6 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
     [match.params.slug],
   )
 
-  const {
-    handleSubmit,
-    control,
-    setValue,
-    register,
-    getValues,
-    reset,
-    setError,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-
   const pincodeForm = useForm({
     resolver: yupResolver(pincodeSchema),
   });
@@ -160,46 +113,6 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
       setShowSubHeader(false);
     }
   }
-
-  const onSubmit = async (data: any) => {
-    setLoading(true);
-    try {
-      const response = await axiosPublic.post(api_routes.register, data);
-      setResponseMessage(response.data.message);
-      setIsToastOpen(true);
-      reset({
-        name: "",
-        message: "",
-        email: "",
-      });
-    } catch (error: any) {
-      console.log(error);
-      if (error?.response?.data?.message) {
-        setResponseMessage(error?.response?.data?.message);
-        setIsToastOpen(true);
-      }
-      if (error?.response?.data?.errors?.name) {
-        setError("name", {
-          type: "server",
-          message: error?.response?.data?.errors?.name[0],
-        });
-      }
-      if (error?.response?.data?.errors?.email) {
-        setError("email", {
-          type: "server",
-          message: error?.response?.data?.errors?.email[0],
-        });
-      }
-      if (error?.response?.data?.errors?.message) {
-        setError("message", {
-          type: "server",
-          message: error?.response?.data?.errors?.message[0],
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
   
   const onPincodeSubmitHandler = async (data: any) => {
     setLoadingPincode(true);
@@ -497,72 +410,7 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                     
                 </IonCard>
 
-                    {product.reviews.length>0 &&<>
-                        <div className='ion-padding pt-1'>
-                            <div className="content-main">
-                            <h6>Reviews</h6>
-                            </div>
-                        </div>
-                        <div className="mb-1">
-                            {product.reviews.map((item, i) => <ReviewItem {...item} key={i} />)}
-                        </div>
-                    </>}
-
-                    <IonCard className="final-table mt-2">
-                        <div className='ion-padding pt-0 pb-0'>
-                            <div className="content-main mt-1">
-                                <h6>Add Review</h6>
-                            </div>
-                        </div>
-                        <div className='ion-padding mb-1'>
-                            <form onSubmit={handleSubmit(onSubmit)}>
-                                <IonList className="ion-no-padding">
-                                {fields.map((item, i) => (
-                                    <Input
-                                    {...item}
-                                    register={register}
-                                    errors={errors}
-                                    key={i}
-                                    />
-                                ))}
-                                </IonList>
-                                <IonList className="ion-no-padding">
-                                    <>
-                                        <IonItem className="ion-no-padding auth-card-background">
-                                            <IonTextarea 
-                                                className="ion-no-padding" 
-                                                labelPlacement="floating" 
-                                                placeholder='Enter message'
-                                                label='Message'
-                                                inputmode="text"
-                                                {...register('message')}
-                                            >
-                                            </IonTextarea>
-                                        </IonItem>
-                                        <ErrorMessage
-                                            errors={errors}
-                                            name='message'
-                                            as={<div style={{ color: 'red' }} />}
-                                        />
-                                    </>
-                                </IonList>
-                                <IonButton
-                                    color="success"
-                                    type="submit"
-                                    expand="block"
-                                    shape="round"
-                                    className="mt-2"
-                                >
-                                {loading ? (
-                                    <IonSpinner name="crescent" color={'success'}></IonSpinner>
-                                ) : (
-                                    "Submit"
-                                )}
-                                </IonButton>
-                            </form>
-                        </div>
-                        
-                    </IonCard>
+                <Review reviews={product.reviews} product_id={product.id} />
                 
                 <MainFooter />
                 <div className="final-table-2"></div>

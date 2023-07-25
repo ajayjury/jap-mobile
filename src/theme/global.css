@@ -393,3 +393,13 @@ code{
 .p-inline-5{
     padding-inline: 5px;
 }
+
+.ps-0{
+    --padding-start: 0;
+}
+
+.sbmt-btn{
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+}
