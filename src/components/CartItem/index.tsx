@@ -1,8 +1,10 @@
 import { IonItemGroup, IonItemDivider, IonRow, IonCol, IonLabel, IonButton, IonIcon, IonImg, IonText, IonInput, IonSpinner } from "@ionic/react";
-import { cartOutline, trashOutline } from "ionicons/icons";
+import { trashOutline } from "ionicons/icons";
+import CartQuantityList from "../CartQuantityList";
+import { useContext, useEffect, useState } from "react";
+import { CartContext } from "../../context/CartProvider";
 
 type Props = {
-    type: 'cart'|'wishlist',
     id: number;
     name: string;
     slug: string;
@@ -28,10 +30,40 @@ type Props = {
     deleteHandler?: (data:number) => void
 };
 
-const CartItem: React.FC<Props> = ({type, id, name, slug, description, featured_image_link, discount, discounted_price, price, deleteHandler, loading}) => {
+const CartItem: React.FC<Props> = ({id, name, slug, description, featured_image_link, discount, discounted_price, price, inventory, deleteHandler, loading}) => {
+    const [cartQuantity, setCartQuantity] = useState<number>(1);
+    const {cart, setCart, cartLoading } = useContext(CartContext);
+
     const deleteClickHandler = () => {
         deleteHandler && deleteHandler(id);
     }
+    useEffect(() => {
+        getProductCartDetail()
+        return () => {}
+    }, [id])
+      
+    const getProductCartDetail = () =>{
+        const cart_prod = cart.cart.filter((item: any)=>item.product_id==id);
+        if(cart_prod.length>0){
+            setCartQuantity(cart_prod[0].quantity);
+        }else{
+            setCartQuantity(1);
+        }
+    }
+
+    const cartHandler = (quantity:number) => {
+        
+        const filteredCart = cart.cart.filter(item=> item.product_id==id);
+        if(filteredCart.length<1){
+            setCart([...cart.cart, {quantity, product_id: id}])
+        } else{
+            const index = cart.cart.findIndex(x => x.product_id==id);
+            const cartArr = cart.cart;
+            cartArr[index].quantity = quantity;
+            setCart([...cartArr])
+        }
+    }
+
     return (
         <IonItemGroup>
             <IonItemDivider className="cart-divider">
@@ -71,26 +103,7 @@ const CartItem: React.FC<Props> = ({type, id, name, slug, description, featured_
                             <h6 className="text-left mb-0 pb-0 mt-0 pt-0">{name}</h6>
                         </IonText>
                         <p className="limit-text-2 mt-0 pt-0 mb-0 pb-0">{description}</p>
-                        <div className="d-flex ion-align-items-center">
-                            <div className="quantity-holder">
-                                <div className="col-auto">
-                                    <IonButton color={'success'} size="small" className="m-0 h-100 p-0">
-                                        -
-                                    </IonButton>
-                                </div>
-                                <div className="col-3">
-                                    <IonInput type="number" inputmode="numeric" aria-label="Quantity" value="1" className="text-center quantity-text-holder"></IonInput>
-                                </div>
-                                <div className="col-auto">
-                                    <IonButton color={'success'} size="small" className="m-0 h-100 p-0">
-                                        +
-                                    </IonButton>
-                                </div>
-                            </div>
-                            {type=='wishlist' && <IonButton color={'success'} size="small" className="p-0 cart-btn">
-                                <IonIcon icon={cartOutline} slot="start"></IonIcon> Add
-                            </IonButton>}
-                        </div>
+                        <CartQuantityList max_quantity={inventory}  cartHandler={cartHandler} cartLoading={cartLoading} quantity_count={cartQuantity} />
                     </IonCol>
                 </IonRow>
                 <table className="mt-1 w-100 border-1">

@@ -4,11 +4,6 @@ import {
     IonContent,
     IonCard,
 } from "@ionic/react";
-import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import Input from "../../../components/Input";
 import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
 import { useContext, useEffect, useState } from "react";
@@ -57,7 +52,7 @@ const Wishlist: React.FC = () => {
     const removeWishlistHandler = (data:number) => {   
         const filteredWishlist = wishlist.wishlist.filter(item=> item!=data);
         setWishlist([...filteredWishlist])
-      }
+    }
     
 
 
@@ -77,7 +72,7 @@ const Wishlist: React.FC = () => {
                         </div>
                     </div>
                     {
-                        wishlistProducts.products.map((item, i) => <CartItem type="wishlist" {...item} deleteHandler={removeWishlistHandler} loading={wishlistLoading} key={i} />)
+                        wishlistProducts.products.map((item, i) => <CartItem {...item} deleteHandler={removeWishlistHandler} loading={wishlistLoading} key={i} />)
                     }
                 </IonCard>
 
