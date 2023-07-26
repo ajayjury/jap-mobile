@@ -19,6 +19,8 @@ import {
     IonList,
     IonTextarea,
     IonSpinner,
+    IonSelect,
+    IonSelectOption,
 } from "@ionic/react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -29,7 +31,7 @@ import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
 import { useContext, useEffect, useRef, useState } from "react";
 import EmptyCart from "../../../components/EmptyCart";
-import { chevronForwardOutline, informationCircleOutline } from "ionicons/icons";
+import { car, chevronForwardOutline, informationCircleOutline } from "ionicons/icons";
 import CartItem from "../../../components/CartItem";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import { ErrorMessage } from "@hookform/error-message";
@@ -112,6 +114,7 @@ const schema = yup
     billing_city: yup.string().required(),
     billing_pin: yup.string().required(),
     billing_address_1: yup.string().required(),
+    mode_of_payment: yup.string().required(),
   })
   .required();
 
@@ -123,6 +126,7 @@ const schema = yup
 
 const Cart: React.FC = () => {
     const [loading, setLoading] = useState(false);
+    const [loadingCheckout, setLoadingCheckout] = useState(false);
     const [loadingCoupon, setLoadingCoupon] = useState<boolean>(false);
     const [couponResponseMessage, setCouponResponseMessage] = useState<{
       message: string,
@@ -182,11 +186,11 @@ const Cart: React.FC = () => {
     });
 
     useEffect(() => {
-        getWishlist()
+        getCart()
         return () => {}
     }, [auth, cart])
 
-    const getWishlist = async () => {
+    const getCart = async () => {
         setLoading(true);
         couponForm.setValue("coupon_code", '')
         setCouponResponseMessage({
@@ -200,7 +204,7 @@ const Cart: React.FC = () => {
           setCartProducts(response.data.cart)
           if(response.data.cart.coupon.code){
             setCouponResponseMessage({
-              message: `Coupon Discount: Rs. ${response.data.cart.coupon.maximum_dicount_in_price} Applied`,
+              message: `Coupon Discount: Rs. ${response.data.cart.coupon_discount} Applied`,
               status: 'success'
             });
             couponForm.setValue("coupon_code", response.data.cart.coupon.code)
@@ -231,7 +235,7 @@ const Cart: React.FC = () => {
         });
           setCartProducts(response.data.cart)
           setCouponResponseMessage({
-              message: `Coupon Discount: Rs. ${response.data.cart.coupon.maximum_dicount_in_price} Applied`,
+              message: `Coupon Discount: Rs. ${response.data.cart.coupon_discount} Applied`,
               status: 'success'
           });
       } catch (error: any) {
@@ -261,9 +265,15 @@ const Cart: React.FC = () => {
       });
 
     const onSubmit = async (data: any) => {
-        setLoading(true);
+        
+        setLoadingCheckout(true);
         try {
-          const response = await axiosPublic.post(api_routes.register, data);
+          const response = await axiosPublic.post(api_routes.place_order, 
+            {...data, ...couponForm.getValues(), order: cart.cart}, 
+            {
+              headers: {"Authorization" : `Bearer ${auth.token}`}
+            }
+          );
           setResponseMessage(response.data.message);
           setIsToastOpen(true);
           reset({
@@ -277,6 +287,12 @@ const Cart: React.FC = () => {
             billing_pin: "",
             billing_address_1: "",
           });
+          couponForm.setValue('coupon_code', '');
+          setCouponResponseMessage({
+              message: '',
+              status: 'error'
+          });
+          setCart([])
         } catch (error: any) {
           console.log(error);
           if (error?.response?.data?.message) {
@@ -337,8 +353,14 @@ const Cart: React.FC = () => {
               message: error?.response?.data?.errors?.billing_address_1[0],
             });
           }
+          if (error?.response?.data?.errors?.mode_of_payment) {
+            setError("mode_of_payment", {
+              type: "server",
+              message: error?.response?.data?.errors?.mode_of_payment[0],
+            });
+          }
         } finally {
-          setLoading(false);
+          setLoadingCheckout(false);
         }
       };
 
@@ -541,7 +563,7 @@ const Cart: React.FC = () => {
                                               className="ion-no-padding" 
                                               labelPlacement="floating" 
                                               placeholder='Enter address'
-                                              label='Message'
+                                              label='Address'
                                               inputmode="text"
                                               {...register('billing_address_1')}
                                           >
@@ -554,6 +576,19 @@ const Cart: React.FC = () => {
                                       />
                                   </>
                               </IonList>
+                              <IonList className="ion-no-padding">
+                                  <IonItem className='ps-0'>
+                                      <IonSelect aria-label="Payment Mode" interface="popover" label="Select payment mode" placeholder="Select payment mode" labelPlacement="floating" className="ion-no-padding" {...register('mode_of_payment')}>
+                                          <IonSelectOption value="Cash On Delivery">Cash On Delivery</IonSelectOption>
+                                          <IonSelectOption value="Online">Online</IonSelectOption>
+                                      </IonSelect>
+                                  </IonItem>
+                                  <ErrorMessage
+                                      errors={errors}
+                                      name='mode_of_payment'
+                                      as={<div style={{ color: 'red' }} />}
+                                  />
+                              </IonList>
                               <IonButton
                                   color="success"
                                   type="submit"
@@ -561,7 +596,7 @@ const Cart: React.FC = () => {
                                   shape="round"
                                   className="mt-2"
                               >
-                              {loading ? (
+                              {loadingCheckout ? (
                                   <IonSpinner name="crescent"></IonSpinner>
                               ) : (
                                   "Place Order"

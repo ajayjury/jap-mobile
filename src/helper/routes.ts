@@ -14,6 +14,7 @@ type api_routes = {
     cart: string,
     rating: string,
     coupon: string,
+    place_order: string,
 }
 export const api_routes: api_routes = {
     login: '/api/v1/auth/login',
@@ -31,4 +32,5 @@ export const api_routes: api_routes = {
     cart: '/api/v1/cart',
     rating: '/api/v1/product/main/reviews',
     coupon: '/api/v1/cart/apply-coupon',
+    place_order: '/api/v1/order/place',
 }
