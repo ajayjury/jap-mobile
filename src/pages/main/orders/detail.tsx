@@ -10,7 +10,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import OrderItem from "../../../components/OrderItem";
 import BackHeader from "../../../components/BackHeader";
 import { callOutline, homeOutline, mailOutline, personOutline } from "ionicons/icons";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, useLocation } from "react-router";
 import { api_routes } from "../../../helper/routes";
 import { AxiosResponse } from "axios";
 import { axiosPublic } from "../../../../axios";
@@ -23,6 +23,7 @@ interface OrderProps extends RouteComponentProps<{
 }> {}
 
 const OrderDetail: React.FC<OrderProps> = ({match}) => {
+    
     const [loading, setLoading] = useState(false);
     const [order, setOrder] = useState<Order>({
         id: 0,

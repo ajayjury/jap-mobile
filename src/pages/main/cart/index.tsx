@@ -22,7 +22,7 @@ import {
     IonSelect,
     IonSelectOption,
 } from "@ionic/react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -126,6 +126,7 @@ const schema = yup
   .required();
 
 const Cart: React.FC = () => {
+    const history = useHistory();
     const [loading, setLoading] = useState(false);
     const [loadingCheckout, setLoadingCheckout] = useState(false);
     const [loadingCoupon, setLoadingCoupon] = useState<boolean>(false);
@@ -275,25 +276,32 @@ const Cart: React.FC = () => {
               headers: {"Authorization" : `Bearer ${auth.token}`}
             }
           );
-          setResponseMessage(response.data.message);
-          setIsToastOpen(true);
-          reset({
-            billing_first_name: "",
-            billing_last_name: "",
-            billing_email: "",
-            billing_phone: "",
-            billing_country: "",
-            billing_state: "",
-            billing_city: "",
-            billing_pin: "",
-            billing_address_1: "",
-          });
-          couponForm.setValue('coupon_code', '');
-          setCouponResponseMessage({
-              message: '',
-              status: 'error'
-          });
-          setCart([])
+          if(data.mode_of_payment==='Cash On Delivery'){
+            setResponseMessage(response.data.message);
+            setIsToastOpen(true);
+            reset({
+              billing_first_name: "",
+              billing_last_name: "",
+              billing_email: "",
+              billing_phone: "",
+              billing_country: "",
+              billing_state: "",
+              billing_city: "",
+              billing_pin: "",
+              billing_address_1: "",
+              mode_of_payment: "",
+            });
+            couponForm.setValue('coupon_code', '');
+            setCouponResponseMessage({
+                message: '',
+                status: 'error'
+            });
+            setCart([])
+            history.push({
+              pathname: `/orders/${response.data.order.receipt}`,
+              state: {success: true}
+            })
+          }
         } catch (error: any) {
           console.log(error);
           if (error?.response?.data?.message) {
