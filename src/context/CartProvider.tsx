@@ -17,11 +17,13 @@ export type CartContextType = {
   cart: CartType;
   cartLoading: boolean;
   setCart: (data: Cart[]) => void;
+  emptyCart: () => void;
 }
 
 const cartDefaultValues: CartContextType = {
   cart: {cart:[]},
   setCart: (data: Cart[]) => {},
+  emptyCart: () => {},
   cartLoading: false
 };
 
@@ -53,6 +55,10 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
         setCartLoading(false);
       }
     }
+
+    const emptyCart = () => {
+      setCartDetails({cart: []});
+    }
     
     const getCart = async () => {
       setCartLoading(true);
@@ -70,7 +76,7 @@ const CartProvider: React.FC<ChildrenType> = ({children}) => {
     }
 
     return (
-      <CartContext.Provider value={{cart, setCart, cartLoading}}>
+      <CartContext.Provider value={{cart, setCart, cartLoading, emptyCart}}>
           {children}
       </CartContext.Provider>
     );

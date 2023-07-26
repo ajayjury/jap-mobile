@@ -178,7 +178,11 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
   
   
   const cartHandler = (quantity:number) => {
-     
+     if(!auth.authenticated){
+        setResponseMessage('Please sign in to add product to cart!');
+        setIsToastOpen(true);
+        return;
+     }
     const filteredCart = cart.cart.filter(item=> item.product_id==product.id);
     if(filteredCart.length<1){
         setCart([...cart.cart, {quantity, product_id: product.id}])

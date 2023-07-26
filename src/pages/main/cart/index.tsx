@@ -39,6 +39,7 @@ import { AuthContext } from "../../../context/AuthProvider";
 import { CartContext } from "../../../context/CartProvider";
 import LoadingPricingTable from "../../../components/LoadingPricingTable";
 import { Cart as CartType } from "../../../helper/types";
+import { Browser } from '@capacitor/browser';
 
 const fields = [
     {
@@ -364,6 +365,9 @@ const Cart: React.FC = () => {
         }
       };
 
+      const loadRazorpay = async() =>{
+        await Browser.open({ url: 'http://capacitorjs.com/' });
+      }
 
     return (
         <IonPage>

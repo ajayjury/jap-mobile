@@ -16,11 +16,13 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthProvider";
 import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
+import { CartContext } from "../../../context/CartProvider";
 
 
 const Account: React.FC = () => {
 
     const {auth, logout} = useContext(AuthContext);
+    const { emptyCart } = useContext(CartContext);
     const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
     const [responseMessage, setResponseMessage] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -32,6 +34,7 @@ const Account: React.FC = () => {
             headers: {"Authorization" : `Bearer ${auth.token}`}
           });
           logout();
+          emptyCart();
           setResponseMessage('Logged out successfully.');
           setIsToastOpen(true);
         } catch (error: any) {
