@@ -253,6 +253,46 @@ const Cart: React.FC = () => {
       }
     };
 
+    const loadRazorpay = async(url:string, receipt:string) =>{
+      await Browser.open({ url });
+      Browser.addListener('browserFinished', async ()=>{
+        try {
+          setLoadingCheckout(true);
+          await axiosPublic.get(api_routes.place_order_detail+`/${receipt}`, {
+            headers: {"Authorization" : `Bearer ${auth.token}`}
+          });
+          setResponseMessage('Order placed successfully.');
+          setIsToastOpen(true);
+          reset({
+            billing_first_name: "",
+            billing_last_name: "",
+            billing_email: "",
+            billing_phone: "",
+            billing_country: "",
+            billing_state: "",
+            billing_city: "",
+            billing_pin: "",
+            billing_address_1: "",
+            mode_of_payment: "",
+          });
+          couponForm.setValue('coupon_code', '');
+          setCouponResponseMessage({
+              message: '',
+              status: 'error'
+          });
+          setCart([])
+          history.push({
+            pathname: `/orders/${receipt}`,
+            state: {success: true}
+          })
+        } catch (error) {
+            console.log(error);
+        }finally{
+            setLoadingCheckout(false);
+        }
+      });
+    }
+
     const {
         handleSubmit,
         control,
@@ -301,6 +341,8 @@ const Cart: React.FC = () => {
               pathname: `/orders/${response.data.order.receipt}`,
               state: {success: true}
             })
+          }else{
+            loadRazorpay(response.data.order.payment_url, response.data.order.receipt);
           }
         } catch (error: any) {
           console.log(error);
@@ -372,10 +414,6 @@ const Cart: React.FC = () => {
           setLoadingCheckout(false);
         }
       };
-
-      const loadRazorpay = async() =>{
-        await Browser.open({ url: 'http://capacitorjs.com/' });
-      }
 
     return (
         <IonPage>
