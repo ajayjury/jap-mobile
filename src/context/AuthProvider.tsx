@@ -3,6 +3,7 @@ import { AuthType, ChildrenType } from "../helper/types";
 import { GetResult, Preferences } from '@capacitor/preferences';
 import { axiosPublic } from "../../axios";
 import { api_routes } from "../helper/routes";
+import { AxiosResponse } from "axios";
 
 
 export type AType = {
@@ -12,6 +13,7 @@ export type AType = {
 export type AuthContextType = {
   auth: AuthType;
   setAuth: (data: AType) => void;
+  logout: () => void;
 }
 
 const authDefaultValues: AuthContextType = {
@@ -21,7 +23,8 @@ const authDefaultValues: AuthContextType = {
     token_type: '',
     user: undefined
   },
-  setAuth: (data: AType) => {}
+  setAuth: (data: AType) => {},
+  logout: () => {},
 };
 
 export const AuthContext = createContext<AuthContextType>(authDefaultValues);
@@ -112,10 +115,24 @@ const AuthProvider: React.FC<ChildrenType> = ({children}) => {
       setAuthDetails({...data});
       await setAuthLocally({...data});
     }
+
+    const logout = () => {
+      try {
+          const data = {auth:{
+            authenticated: false,
+            token: '',
+            token_type: '',
+            user: undefined
+          }};
+          setAuth({...data})
+      } catch (error) {
+          console.log(error);
+      }
+    }
     
 
     return (
-      <AuthContext.Provider value={{...auth, setAuth}}>
+      <AuthContext.Provider value={{...auth, setAuth, logout}}>
           {children}
       </AuthContext.Provider>
     );
