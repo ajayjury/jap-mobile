@@ -29,7 +29,7 @@ import { axiosPublic } from "../../../../axios";
 import { api_routes } from "../../../helper/routes";
 import { useContext, useEffect, useRef, useState } from "react";
 import EmptyCart from "../../../components/EmptyCart";
-import { chevronForwardOutline } from "ionicons/icons";
+import { chevronForwardOutline, informationCircleOutline } from "ionicons/icons";
 import CartItem from "../../../components/CartItem";
 import { OverlayEventDetail } from "@ionic/react/dist/types/components/react-component-lib/interfaces";
 import { ErrorMessage } from "@hookform/error-message";
@@ -115,8 +115,22 @@ const schema = yup
   })
   .required();
 
+  const couponSchema = yup
+  .object({
+    coupon_code: yup.string().required(),
+  })
+  .required();
+
 const Cart: React.FC = () => {
     const [loading, setLoading] = useState(false);
+    const [loadingCoupon, setLoadingCoupon] = useState<boolean>(false);
+    const [couponResponseMessage, setCouponResponseMessage] = useState<{
+      message: string,
+      status: 'success'|'error'
+    }>({
+      message: '',
+      status: 'error'
+    });
     const [responseMessage, setResponseMessage] = useState("");
     const [isToastOpen, setIsToastOpen] = useState(false);
     const [cartProducts, setCartProducts] = useState<CartType>({
@@ -163,6 +177,10 @@ const Cart: React.FC = () => {
       }
     }
 
+    const couponForm = useForm({
+      resolver: yupResolver(couponSchema),
+    });
+
     useEffect(() => {
         getWishlist()
         return () => {}
@@ -170,11 +188,23 @@ const Cart: React.FC = () => {
 
     const getWishlist = async () => {
         setLoading(true);
+        couponForm.setValue("coupon_code", '')
+        setCouponResponseMessage({
+            message: '',
+            status: 'error'
+        });
         try {
           const response = await axiosPublic.get(api_routes.cart, {
             headers: {"Authorization" : `Bearer ${auth.token}`}
           });
           setCartProducts(response.data.cart)
+          if(response.data.cart.coupon.code){
+            setCouponResponseMessage({
+              message: `Coupon Discount: Rs. ${response.data.cart.coupon.maximum_dicount_in_price} Applied`,
+              status: 'success'
+            });
+            couponForm.setValue("coupon_code", response.data.cart.coupon.code)
+          }
         } catch (error: any) {
           console.log(error);
         }finally {
@@ -188,6 +218,34 @@ const Cart: React.FC = () => {
         setResponseMessage('Product removed from cart');
         setIsToastOpen(true);
     }
+
+    const onCouponSubmitHandler = async (data: any) => {
+      setLoadingCoupon(true);
+      setCouponResponseMessage({
+          message: '',
+          status: 'error'
+      });
+      try {
+        const response = await axiosPublic.post(api_routes.coupon, data, {
+          headers: {"Authorization" : `Bearer ${auth.token}`}
+        });
+          setCartProducts(response.data.cart)
+          setCouponResponseMessage({
+              message: `Coupon Discount: Rs. ${response.data.cart.coupon.maximum_dicount_in_price} Applied`,
+              status: 'success'
+          });
+      } catch (error: any) {
+        console.log(error);
+        if (error?.response?.data?.errors?.coupon_code) {
+          couponForm.setError("coupon_code", {
+            type: "server",
+            message: error?.response?.data?.errors?.coupon_code[0],
+          });
+        }
+      } finally {
+        setLoadingCoupon(false);
+      }
+    };
 
     const {
         handleSubmit,
@@ -318,28 +376,49 @@ const Cart: React.FC = () => {
                           </div>
                       </div>
                       <div className='ion-padding'>
-                          <IonRow className="ion-align-items-center ion-justify-content-between p-0 w-100">
-                              <IonCol
-                                  size="9"
-                                  className='text-left'
-                              >
-                                  <IonItem>
-                                      <IonInput
-                                      className="coupon-code-input-holder"
-                                      clearInput={true}
-                                      placeholder="Enter Coupon Code"
-                                      ></IonInput>
-                                  </IonItem>
-                              </IonCol>
-                              <IonCol
-                                  size="3"
-                                  className='text-right'
-                              >
-                                  <IonButton className="m-0" size="small" fill='outline' color="success">
-                                      Apply
-                                  </IonButton>
-                              </IonCol>
-                          </IonRow>
+                        <form onSubmit={couponForm.handleSubmit(onCouponSubmitHandler)}>
+                            <IonRow className="ion-align-items-center ion-justify-content-between p-0 w-100">
+                                <IonCol
+                                    size="9"
+                                    className='text-left'
+                                >
+                                    <IonItem>
+                                        <IonInput
+                                        className="coupon-code-input-holder"
+                                        clearInput={true}
+                                        placeholder="Enter Coupon Code"
+                                        {...couponForm.register('coupon_code')}
+                                        ></IonInput>
+                                    </IonItem>
+                                    <ErrorMessage
+                                        errors={couponForm.formState.errors}
+                                        name={'coupon_code'}
+                                        as={<div style={{ color: 'red' }} />}
+                                    />
+                                </IonCol>
+                                <IonCol
+                                    size="3"
+                                    className='text-right'
+                                >
+                                    <IonButton className="m-0" type='submit' size="small" fill='outline' color="success">
+                                      {loadingCoupon ? (
+                                          <IonSpinner name="crescent" color={'success'}></IonSpinner>
+                                      ) : (
+                                          "Apply"
+                                      )}
+                                    </IonButton>
+                                </IonCol>
+                                {couponResponseMessage.message.length>0 && <IonCol
+                                    size="12"
+                                    className='text-center'
+                                >
+                                    {couponResponseMessage.status=='error' ? 
+                                        null :
+                                        <p className={`text-${couponResponseMessage.status} mb-0 d-flex ion-align-items-center ion-justify-content-center`}><IonIcon slot="start" className={`info-icon-green`} icon={informationCircleOutline}></IonIcon> {couponResponseMessage.message}</p>
+                                    }
+                                </IonCol>}
+                            </IonRow>
+                        </form>
                       </div>
                       
                   </IonCard>

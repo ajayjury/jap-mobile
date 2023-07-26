@@ -13,6 +13,7 @@ type api_routes = {
     wishlist: string,
     cart: string,
     rating: string,
+    coupon: string,
 }
 export const api_routes: api_routes = {
     login: '/api/v1/auth/login',
@@ -29,4 +30,5 @@ export const api_routes: api_routes = {
     wishlist: '/api/v1/wishlist',
     cart: '/api/v1/cart',
     rating: '/api/v1/product/main/reviews',
+    coupon: '/api/v1/cart/apply-coupon',
 }
