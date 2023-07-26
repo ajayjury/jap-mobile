@@ -34,17 +34,28 @@ import AuthProvider from './context/AuthProvider';
 import PageTabs from './components/PageTabs';
 import WishlistProvider from './context/WishlistProvider';
 import CartProvider from './context/CartProvider';
+import { SplashScreen } from '@capacitor/splash-screen';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <AuthProvider>
-     <WishlistProvider>
-        <CartProvider>
-            <PageTabs />
-        </CartProvider>
-     </WishlistProvider>
-  </AuthProvider>
-);
+const App: React.FC = () => {
+  // Show the splash for two seconds and then automatically hide it:
+  const showSplashScreen = async () => {
+    await SplashScreen.show({
+      showDuration: 2000,
+      autoHide: true,
+    });
+  }
+  showSplashScreen()
+  return (
+    <AuthProvider>
+      <WishlistProvider>
+          <CartProvider>
+              <PageTabs />
+          </CartProvider>
+      </WishlistProvider>
+    </AuthProvider>
+  )
+};
 
 export default App;
