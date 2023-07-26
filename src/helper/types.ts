@@ -188,3 +188,52 @@ export interface AuthType<> {
     token_type: string;
     user?: UserType;
 }
+
+export interface Order<> {
+    id: number;
+    created_at: string;
+    updated_at: string;
+    coupon_discount: number;
+    delivery_charge: number;
+    gst_charge: number;
+    sub_total: number;
+    total_discount: number;
+    total_items: number;
+    total_quantity: number;
+    total_price_with_coupon_dicount: number;
+    total_price_with_gst_delivery_charge: number;
+    total_price_without_gst_delivery_charge: number;
+    coupon: Coupon;
+    products: []|CartProducts[];
+    coupon_name: null|string;
+    coupon_code: null|string;
+    coupon_discount_percentage: null|string;
+    coupon_maximum_discount: null|number;
+    coupon_maximum_use: null|number;
+    billing_first_name: string;
+    billing_last_name: string;
+    billing_email: string;
+    billing_phone: number;
+    billing_country: string;
+    billing_state: string;
+    billing_city: string;
+    billing_pin: number;
+    billing_address_1: string;
+    billing_address_2: null|string;
+    shipping_first_name: null|string;
+    shipping_last_name: null|string;
+    shipping_email: null|string;
+    shipping_phone: null|number;
+    shipping_country: null|string;
+    shipping_state: null|string;
+    shipping_city: null|string;
+    shipping_pin: null|number;
+    shipping_address_1: null|string;
+    shipping_address_2: null|string;
+    order_notes: null|string;
+    receipt: null|string;
+    mode_of_payment: 'Cash On Delivery'|'Online';
+    order_status: string;
+    payment_status: string;
+    razorpay_order_id: null|string;
+}

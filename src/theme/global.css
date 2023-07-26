@@ -196,9 +196,18 @@
     padding-bottom: 0;
 }
 
+.pb-main-1{
+    padding-bottom: 10px;
+}
+
 .ptb-1{
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+}
+
+.ptb-1_5{
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
 }
 
 .p-sticky-0{

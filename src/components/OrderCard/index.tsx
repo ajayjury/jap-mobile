@@ -1,14 +1,15 @@
 import { IonItem, IonLabel } from "@ionic/react";
+import { Order } from "../../helper/types";
 
-const OrderCard: React.FC = () => {
+const OrderCard: React.FC<Order> = ({receipt, total_price_with_coupon_dicount, created_at, order_status, products}) => {
     return (
         <IonItem lines="full" detail={true}>
             <IonLabel>
-                <h3><code>Receipt:</code> 68ddf3f0-2d46-4a36-b05d-5a135e8e3d35</h3>
-                <p><code>Items:</code> Product 1, Product 2, Product 3, Product 4</p>
-                <p><code>Amount:</code> Rs. 12555.6</p>
-                <p><code>Placed:</code> 3 weeks ago</p>
-                <p><code>Order Status:</code> OUT FOR DELIVERY</p>
+                <h3><code>Receipt:</code> {receipt}</h3>
+                <p><code>Items:</code> {products.map((item, i)=> <span>{item.name}{products.length==i+1 ? '' : ','} </span>)}</p>
+                <p><code>Amount:</code> Rs. {total_price_with_coupon_dicount}</p>
+                <p><code>Placed:</code> {created_at}</p>
+                <p><code>Order Status:</code> {order_status}</p>
             </IonLabel>
         </IonItem>
     );

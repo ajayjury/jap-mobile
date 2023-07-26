@@ -15,6 +15,8 @@ type api_routes = {
     rating: string,
     coupon: string,
     place_order: string,
+    place_order_paginate: string,
+    place_order_detail: string,
 }
 export const api_routes: api_routes = {
     login: '/api/v1/auth/login',
@@ -33,4 +35,6 @@ export const api_routes: api_routes = {
     rating: '/api/v1/product/main/reviews',
     coupon: '/api/v1/cart/apply-coupon',
     place_order: '/api/v1/order/place',
+    place_order_paginate: '/api/v1/order/placed/paginate',
+    place_order_detail: '/api/v1/order/placed/detail',
 }
