@@ -4,6 +4,6 @@ type ENV = {
 }
 
 export const ENV:ENV = {
-    API_ENDPOINT : "https://jap.digisole.in",
+    API_ENDPOINT : "https://server-api.jap.bio",
     CURRENT_ENV : "dev"
 }

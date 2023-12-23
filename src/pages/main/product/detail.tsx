@@ -5,7 +5,7 @@ import {axiosPublic} from '../../../../axios';
 import { api_routes } from '../../../helper/routes';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import MainFooter from '../../../components/MainFooter';
-import { bookmarkOutline, informationCircleOutline } from 'ionicons/icons';
+import { bookmarkOutline, informationCircleOutline, logoFacebook, logoInstagram, logoLinkedin, logoTwitter } from 'ionicons/icons';
 import BackHeader from '../../../components/BackHeader';
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
@@ -21,6 +21,7 @@ import { WishlistContext } from '../../../context/WishlistProvider';
 import { CartContext } from '../../../context/CartProvider';
 import { AuthContext } from '../../../context/AuthProvider';
 import Review from '../../../components/Review';
+import { Browser } from '@capacitor/browser';
 
 
 interface ProductProps extends RouteComponentProps<{
@@ -74,6 +75,7 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
     is_new_arrival: false,
     other_images: [],
     price: 0,
+    weight: null,
     reviews: [],
     categories: []
   });
@@ -196,6 +198,10 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
     setIsToastOpen(true);
   }
 
+  const shareProduct = async(url:string) =>{
+    await Browser.open({ url });
+  }
+
     return (
       <IonPage>
         <BackHeader title={product.name} link='/products' />
@@ -274,6 +280,22 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                                 size="3"
                                 className='text-left'
                             >
+                                <p className='p-0 m-0 font-normal'><code>Weight</code></p>
+                            </IonCol>
+                            <IonCol
+                                size="9"
+                                className='text-right'
+                            >
+                                <p className='p-0 m-0 font-normal'>{product.weight}</p>
+                            </IonCol>
+                        </IonRow>
+                    </IonItemDivider>
+                    <IonItemDivider className="category-divider category-divider-end">
+                        <IonRow className="ion-align-items-center ion-justify-content-between p-0 mt- w-100">
+                            <IonCol
+                                size="3"
+                                className='text-left'
+                            >
                                 <p className='p-0 m-0 font-normal'><code>In Stock</code></p>
                             </IonCol>
                             <IonCol
@@ -301,6 +323,32 @@ const ProductDetail: React.FC<ProductProps> = ({match}) => {
                                 <p className='p-0 m-0 font-normal'>{
                                     product.inventory
                                 }</p>
+                            </IonCol>
+                        </IonRow>
+                    </IonItemDivider>
+                    <IonItemDivider className="category-divider category-divider-end">
+                        <IonRow className="ion-align-items-center ion-justify-content-between p-0 mt- w-100">
+                            <IonCol
+                                size="12"
+                                className='text-center'
+                            >
+                                <p className='p-0 m-0 font-normal mb-1'><code>Share</code></p>
+                            </IonCol>
+                            <IonCol
+                                size="12"
+                                className='text-center'
+                            >
+                                <div className='text-center mt-1 mb-1'>
+                                    <IonButton color='success' fill='clear' onClick={()=>shareProduct(`https://www.facebook.com/share.php?u=https://jap.bio/shop-detail/${product.slug}&title=${product.name}`)}>
+                                        <IonIcon slot="icon-only" icon={logoFacebook}></IonIcon>
+                                    </IonButton>
+                                    <IonButton color='success' fill='clear' onClick={()=>shareProduct(`https://www.linkedin.com/shareArticle?mini=true&url=https://jap.bio/shop-detail/${product.slug}&title=${product.name}&source=${product.name}`)}>
+                                        <IonIcon slot="icon-only" icon={logoLinkedin}></IonIcon>
+                                    </IonButton>
+                                    <IonButton color='success' fill='clear' onClick={()=>shareProduct(`https://twitter.com/share?text=${product.name}&url=https://jap.bio/shop-detail/${product.slug}`)}>
+                                        <IonIcon slot="icon-only" icon={logoTwitter}></IonIcon>
+                                    </IonButton>
+                                </div>
                             </IonCol>
                         </IonRow>
                     </IonItemDivider>

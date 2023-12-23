@@ -21,6 +21,7 @@
 
 .custom-main-header-bg{
     background-color: #ddf8e8;
+    background-color: #ffffff;
     box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 .custom-main-header{
@@ -28,6 +29,7 @@
     position: sticky;
     z-index: 10099;
     top: 0px;
+    background-color: #ffffff;
 }
 
 .swiper{
@@ -440,4 +442,10 @@ code{
     padding-top: var(--ion-padding, 16px);
     padding-bottom: var(--ion-padding, 16px);
     height: 90% !important;
+}
+code {
+    color: #699c47;
+}
+.fs-1{
+    font-size: 1rem;
 }

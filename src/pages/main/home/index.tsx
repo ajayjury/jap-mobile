@@ -13,52 +13,10 @@ import ProductSegment from '../../../components/ProductSegment';
 import CategorySegment from '../../../components/CategorySegment';
 
 const images = [
-  '/images/banner1.jpg',
-  '/images/banner3.avif',
-  '/images/banner5.avif',
-];
-
-const categories = [
-  {
-    name: 'category 1',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-01.png',
-  },
-  {
-    name: 'category 2',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-02.png',
-  },
-  {
-    name: 'category 3',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-03.png',
-  },
-  {
-    name: 'category 4',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-04.png',
-  },
-  {
-    name: 'category 5',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-05.png',
-  },
-  {
-    name: 'category 6',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-01.png',
-  },
-  {
-    name: 'category 7',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-02.png',
-  },
-  {
-    name: 'category 8',
-    items: '25 items',
-    image: 'https://orgado-react.vercel.app/assets/img/category/img/cateegory-img-03.png',
-  },
+  '/images/5.jpg',
+  '/images/6.jpg',
+  '/images/7.jpg',
+  '/images/8.jpg',
 ];
 
 
@@ -91,18 +49,8 @@ const Home: React.FC = () => {
           </div>
           <div className='ion-padding pt-0'>
             <div className="content-main">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sed tellus nec mauris auctor dignissim fermentum in
-                risus. Sed nec convallis sapien, id tincidunt enim. Mauris ornare eleifend nunc id mattis. Fusce augue diam,
-                sagittis nec posuere at, consectetur tempor lectus. Nulla at lectus eget mauris iaculis malesuada mollis sed neque.
-                Curabitur et risus tristique, malesuada mauris finibus, elementum massa. Proin lacinia mauris quis ligula blandit
-                ullamcorper. Donec ut posuere lorem. </p>
-                <p>In volutpat magna vitae tellus posuere pulvinar. Nam varius ligula justo, nec
-                placerat lacus pharetra ac. Aenean massa orci, tristique in nisl ut, aliquet consectetur libero. Etiam luctus
-                placerat vulputate. Aliquam ipsum massa, porttitor at mollis ut, pretium sit amet mi. In neque mauris, placerat et
-                neque vel, tempor interdum dolor. Suspendisse gravida malesuada tellus, vel dapibus nisl dignissim vel. Cras ut
-                nulla sit amet erat malesuada euismod vel a nulla.
-              </p>
+              <p>JAP-PCL was created as a multi-state farmer's producer company, started by shareholder-member farmers from Karnataka, Tamil Nadu, Kerala and Andhra Pradesh. All these farmers practice only organic farming or natural farming, and hence the names, jaivik (organic) and pratrutik (natural). These organic farmers have been certified since 2015. Later, the new PCL was joined by small holders certified groups (ICS groups – Internal Control Systems) from different districts/locations from the 4 states, thus giving a wider basket of offerings for FPOs to connect to markets and buyers.</p>
+              <p>The formation of JAP-PCL and connecting it to buyers and markets are powered and facilitated by ICCOA – International Competence Centre for Organic Agriculture as part of its strategy to incubate a farmer - producer company to maintain and carry forward the sustainable farming status and organic certification of farmer groups created by ICCOA's projects during the last ten years or so.</p>
             </div>
             
             <CategorySegment />

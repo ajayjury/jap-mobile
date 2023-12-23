@@ -57,6 +57,7 @@ export interface ProductSegmentState<> {
     is_new_arrival: boolean
     other_images: ProductOtherImagesState[]|[]
     price: number
+    weight: string |  null;
     reviews: ProductReviewState[]|[],
     categories: []|CategoryState[]
 }
@@ -83,6 +84,7 @@ export interface WishlistProducts<> {
     is_featured: boolean;
     is_new_arrival: boolean
     price: number
+    weight: string |  null;
     categories: []|CategoryState[]
 }
 
@@ -108,6 +110,7 @@ export interface CartProducts<> {
     is_featured: boolean;
     is_new_arrival: boolean
     price: number
+    weight: string |  null;
     quantity: number
     total_quantity_price: number
     categories: []|CategoryState[]
